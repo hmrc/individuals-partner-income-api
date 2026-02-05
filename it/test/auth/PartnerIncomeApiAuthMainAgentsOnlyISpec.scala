@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* TODO: uncomment once create/amend endpoint has been created
+
 package auth
 
 import play.api.http.Status
@@ -155,3 +157,6 @@ class PartnerIncomeApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
   }
 
 }
+
+*/
+
