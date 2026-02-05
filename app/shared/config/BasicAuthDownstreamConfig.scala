@@ -16,13 +16,6 @@
 
 package shared.config
 
-case class DownstreamConfig(
-    baseUrl: String,
-    env: String,
-    token: String,
-    environmentHeaders: Option[Seq[String]]
-)
-
 case class BasicAuthDownstreamConfig(
     baseUrl: String,
     env: String,

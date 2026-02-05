@@ -42,35 +42,24 @@ class SharedAppConfigSpec extends UnitSpec {
       result shouldBe "http://localhost:9769"
     }
 
-    "return the DES config" in {
-      val expectedDesEnvHeaders = Some(
+    "return the HIP config" in {
+
+      val expectedHipEnvHeaders = Some(
         List(
-          "Des-Accept",
-          "Des-Gov-Test-Scenario",
-          "Des-Content-Type"
+          "Accept",
+          "Gov-Test-Scenario",
+          "Location",
+          "X-Request-Timestamp",
+          "X-Session-Id",
+          "X-Request-Id"
         ))
 
-      simpleAppConfig.desDownstreamConfig shouldBe DownstreamConfig(
-        "http://127.0.0.1:6666",
+      simpleAppConfig.hipDownstreamConfig shouldBe BasicAuthDownstreamConfig(
+        "http://127.0.0.1:8888",
         "Prod",
-        "DES-ABCD1234",
-        expectedDesEnvHeaders
-      )
-    }
-
-    "return the IFS config" in {
-      val expectedIfsEnvHeaders = Some(
-        List(
-          "IFS-Accept",
-          "IFS-Gov-Test-Scenario",
-          "IFS-Content-Type"
-        ))
-
-      simpleAppConfig.ifsDownstreamConfig shouldBe DownstreamConfig(
-        "http://127.0.0.1:7777",
-        "Prod",
-        "IFS-ABCD1234",
-        expectedIfsEnvHeaders
+        "hipClientId",
+        "hipClientSecret",
+        expectedHipEnvHeaders
       )
     }
   }
@@ -406,21 +395,13 @@ class SharedAppConfigSpec extends UnitSpec {
           |        port = 9769
           |      }
           |
-          |      des {
+          |      hip {
           |        host = 127.0.0.1
-          |        port = 6666
+          |        port = 8888
           |        env = Prod
-          |        token = DES-ABCD1234
-          |        environmentHeaders = ["Des-Accept", "Des-Gov-Test-Scenario", "Des-Content-Type"]
-          |      }
-          |
-          |      ifs {
-          |        enabled = true
-          |        host = 127.0.0.1
-          |        port = 7777
-          |        env = Prod
-          |        token = IFS-ABCD1234
-          |        environmentHeaders = ["IFS-Accept", "IFS-Gov-Test-Scenario", "IFS-Content-Type"]
+          |        clientId = "hipClientId"
+          |        clientSecret = "hipClientSecret"
+          |        environmentHeaders = ["Accept", "Gov-Test-Scenario", "Location", "X-Request-Timestamp", "X-Session-Id", "X-Request-Id"]
           |      }
           |    }
           |  }

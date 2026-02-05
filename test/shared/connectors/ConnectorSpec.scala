@@ -20,7 +20,7 @@ import com.google.common.base.Charsets
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Writes}
-import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import shared.config.{BasicAuthDownstreamConfig, MockSharedAppConfig}
 import shared.mocks.MockHttpClient
 import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -111,35 +111,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-  }
-
-  protected trait StandardConnectorTest extends ConnectorTest {
-    protected def name: String
-
-    private val token       = s"$name-token"
-    private val environment = s"$name-environment"
-
-    protected final val requiredHeaders: Seq[(String, String)] = List(
-      "Authorization"        -> s"Bearer $token",
-      "Environment"          -> environment,
-      "User-Agent"           -> "this-api",
-      "CorrelationId"        -> correlationId,
-      "Gov-Test-Scenario"    -> "DEFAULT"
-    ) ++ intent.map("intent" -> _)
-
-    protected final val config: DownstreamConfig = DownstreamConfig(this.baseUrl, environment, token, Some(allowedHeaders))
-  }
-
-  protected trait DesTest extends StandardConnectorTest {
-    val name = "des"
-
-    MockedSharedAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
-  }
-
-  protected trait IfsTest extends StandardConnectorTest {
-    override val name = "ifs"
-
-    MockedSharedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait HipTest extends ConnectorTest {

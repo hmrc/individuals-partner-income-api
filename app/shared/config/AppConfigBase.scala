@@ -25,18 +25,6 @@ trait AppConfigBase {
 
   private def serviceKeyFor(serviceName: String) = s"microservice.services.$serviceName"
 
-  protected def downstreamConfig(serviceName: String): DownstreamConfig = {
-    val baseUrl = config.baseUrl(serviceName)
-
-    val serviceKey = serviceKeyFor(serviceName)
-
-    val env                = config.getString(s"$serviceKey.env")
-    val token              = config.getString(s"$serviceKey.token")
-    val environmentHeaders = configuration.getOptional[Seq[String]](s"$serviceKey.environmentHeaders")
-
-    DownstreamConfig(baseUrl, env, token, environmentHeaders)
-  }
-
   protected def basicAuthDownstreamConfig(serviceName: String): BasicAuthDownstreamConfig = {
     val baseUrl = config.baseUrl(serviceName)
 
