@@ -42,7 +42,7 @@ class PartnerIncomeApiDefinitionFactorySpec extends UnitSpec with MockHttpClient
         apiDefinitionFactory.definition shouldBe
           Definition(
             api = APIDefinition(
-              name = "Individual Partner Income (MTD)",
+              name = "Individuals Partner Income (MTD)",
               description = "An API for providing partner income data",
               context = "individuals/partner-income",
               categories = List("INCOME_TAX_MTD"),

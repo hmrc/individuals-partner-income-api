@@ -27,7 +27,7 @@ class PartnerIncomeApiDefinitionFactory @Inject() (protected val appConfig: Shar
   val definition: Definition =
     Definition(
       api = APIDefinition(
-        name = "Individual Partner Income (MTD)",
+        name = "Individuals Partner Income (MTD)",
         description = "An API for providing partner income data",
         context = appConfig.apiGatewayContext,
         categories = List("INCOME_TAX_MTD"),
