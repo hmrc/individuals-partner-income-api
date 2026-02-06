@@ -8,6 +8,7 @@ object CodeCoverageSettings {
     "Reverse.*",
     "uk.gov.hmrc.BuildInfo",
     "app.*",
+    ".*\\$anon.*",
     "prod.*",
     ".*Routes.*",
     "config.*",
@@ -17,7 +18,6 @@ object CodeCoverageSettings {
 
   val settings: Seq[Setting[?]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageExcludedFiles    := ".*\\$anon.*",
     ScoverageKeys.coverageMinimumStmtTotal := 95,
     ScoverageKeys.coverageFailOnMinimum    := true,
     ScoverageKeys.coverageHighlighting     := true

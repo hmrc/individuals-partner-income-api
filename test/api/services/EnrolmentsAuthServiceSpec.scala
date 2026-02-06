@@ -16,21 +16,16 @@
 
 package api.services
 
-import org.scalamock.handlers.CallHandler
 import api.config.{ConfidenceLevelConfig, MockAppConfig}
 import api.models.auth.UserDetails
 import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
-import api.services.EnrolmentsAuthService.{
-  authorisationDisabledPredicate,
-  authorisationEnabledPredicate,
-  mtdEnrolmentPredicate,
-  supportingAgentAuthPredicate
-}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import api.services.EnrolmentsAuthService.*
+import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, authorisedEnrolments}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{EmptyRetrieval, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -74,6 +69,8 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
       behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate, supportingAgentPredicate)
 
       behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+
+      behave like disallowWhenWrongAffinityGroup(authValidationEnabled, initialPredicate)
 
       behave like disallowUsersWithoutEnrolments(authValidationEnabled, initialPredicate)
       behave like disallowWhenNoBearerToken(authValidationEnabled, initialPredicate)
@@ -237,6 +234,20 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
         result shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
 
+    def disallowWhenWrongAffinityGroup(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "disallow users with an incorrect Affinity Group" in new Test {
+        val retrievalsResult = new ~(None, Enrolments(Set.empty))
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(retrievalsResult))
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
+      }
+
     def disallowWhenNoBearerToken(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
       "disallow users with no bearer token" in new Test {
         mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
@@ -284,7 +295,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
         .anyNumberOfTimes()
         .returns(
           ConfidenceLevelConfig(
-            confidenceLevel = ConfidenceLevel.L200,
+            confidenceLevel = ConfidenceLevel.L250,
             definitionEnabled = true,
             authValidationEnabled = authValidationEnabled
           )

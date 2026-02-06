@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package api.connectors.httpparsers
 
-import play.api.libs.json.*
 import api.models.errors.*
 import api.utils.Logging
+import play.api.libs.json.*
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.util.{Success, Try}
@@ -40,7 +40,7 @@ trait HttpParser extends Logging {
       }
     }
 
-    def parseResult[T](json: JsValue)(implicit reads: Reads[T]): Option[T] = json.validate[T] match {
+    private def parseResult[T](json: JsValue)(implicit reads: Reads[T]): Option[T] = json.validate[T] match {
       case JsSuccess(value, _) => Some(value)
       case JsError(error) =>
         logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
@@ -51,39 +51,22 @@ trait HttpParser extends Logging {
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")
 
-  private val multipleErrorReads: Reads[Seq[DownstreamErrorCode]] = (__ \ "failures").read[Seq[DownstreamErrorCode]]
-
-  private val multipleHipErrorReads: Reads[Seq[DownstreamErrorCode]] = {
-    implicit val errorTypeReads: Reads[DownstreamErrorCode] = (__ \ "type").read[String].map(DownstreamErrorCode(_))
-    (__ \ "response" \ "failures").read[Seq[DownstreamErrorCode]]
-  }
-
-  private val bvrErrorReads: Reads[Seq[DownstreamErrorCode]] = {
-    implicit val errorIdReads: Reads[DownstreamErrorCode] = (__ \ "id").read[String].map(DownstreamErrorCode(_))
-    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[Seq[DownstreamErrorCode]]
-  }
-
   private val multipleTopLevelErrorCodesReads: Reads[Seq[DownstreamErrorCode]] =
     __.read[Seq[JsObject]].map(_.map(obj => DownstreamErrorCode((obj \ "errorCode").as[String])))
 
-  private val multipleErrorCodesInResponseReads: Reads[Seq[DownstreamErrorCode]] =
-    (__ \ "response").read[Seq[JsObject]].map(_.map(obj => DownstreamErrorCode((obj \ "errorCode").as[String])))
+  private val multipleFailureErrorTypesReads: Reads[Seq[DownstreamErrorCode]] =
+    (__ \ "response" \ "failures").read[Seq[JsObject]].map(_.map(obj => DownstreamErrorCode((obj \ "type").as[String])))
 
   def parseErrors(response: HttpResponse): DownstreamError = {
-
-    val singleError            = response.validateJson[DownstreamErrorCode].map(err => DownstreamErrors(List(err)))
-    lazy val multipleErrors    = response.validateJson(multipleErrorReads).map(errs => DownstreamErrors(errs))
-    lazy val multipleHipErrors = response.validateJson(multipleHipErrorReads).map(errs => DownstreamErrors(errs))
-    lazy val bvrErrors = response.validateJson(bvrErrorReads).map(errs => OutboundError(BVRError, Some(errs.map(_.toMtd(BVRError.httpStatus)))))
-    lazy val multipleTopLevelErrorCodes   = response.validateJson(multipleTopLevelErrorCodesReads).map(errs => DownstreamErrors(errs))
-    lazy val multipleErrorCodesInResponse = response.validateJson(multipleErrorCodesInResponseReads).map(errs => DownstreamErrors(errs))
+    lazy val multipleTopLevelErrorCodes = response.validateJson(multipleTopLevelErrorCodesReads).map(errs => DownstreamErrors(errs))
+    lazy val multipleFailureErrorTypes  = response.validateJson(multipleFailureErrorTypesReads).map(errs => DownstreamErrors(errs))
 
     lazy val unableToParseJsonError = {
       logger.warn(s"unable to parse errors from response: ${response.body}")
       OutboundError(InternalError)
     }
 
-    singleError orElse multipleErrors orElse multipleTopLevelErrorCodes orElse multipleErrorCodesInResponse orElse multipleHipErrors orElse bvrErrors getOrElse unableToParseJsonError
+    multipleTopLevelErrorCodes orElse multipleFailureErrorTypes getOrElse unableToParseJsonError
   }
 
 }

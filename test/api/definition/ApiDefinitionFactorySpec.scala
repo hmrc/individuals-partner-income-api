@@ -28,6 +28,34 @@ import scala.language.reflectiveCalls
 
 class ApiDefinitionFactorySpec extends UnitSpec {
 
+  "definition" when {
+    "called" should {
+      "return a valid Definition case class" in new Test {
+        MockedAppConfig.apiStatus(Version1) returns "BETA"
+        MockedAppConfig.endpointsEnabled(Version1) returns true
+        MockedAppConfig.deprecationFor(Version1).returns(NotDeprecated.valid).anyNumberOfTimes()
+
+        apiDefinitionFactory.definition shouldBe
+          Definition(
+            api = APIDefinition(
+              name = "Individuals Partner Income (MTD)",
+              description = "An API for providing partner income data",
+              context = "individuals/partner-income",
+              categories = Seq("INCOME_TAX_MTD"),
+              versions = Seq(
+                APIVersion(
+                  version = Version1,
+                  status = BETA,
+                  endpointsEnabled = true
+                )
+              ),
+              requiresTrust = None
+            )
+          )
+      }
+    }
+  }
+
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
       s"return the expected status" in new Test {
@@ -68,7 +96,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
     val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
-    MockedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
+    MockedAppConfig.apiGatewayContext returns "individuals/partner-income"
   }
 
 }

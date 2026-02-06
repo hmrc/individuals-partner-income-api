@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,12 +109,13 @@ object EmptinessChecker {
 
   def primitive[A]: EmptinessChecker[A] = EmptinessChecker.instance(_ => Structure.Primitive)
 
-  given EmptinessChecker[String]     = instance(_ => Structure.Primitive)
-  given EmptinessChecker[Int]        = instance(_ => Structure.Primitive)
-  given EmptinessChecker[Double]     = instance(_ => Structure.Primitive)
-  given EmptinessChecker[Boolean]    = instance(_ => Structure.Primitive)
-  given EmptinessChecker[BigInt]     = instance(_ => Structure.Primitive)
-  given EmptinessChecker[BigDecimal] = instance(_ => Structure.Primitive)
+  given stringInstance: EmptinessChecker[String]   = instance(_ => Structure.Primitive)
+  given intInstance: EmptinessChecker[Int]         = instance(_ => Structure.Primitive)
+  given doubleInstance: EmptinessChecker[Double]   = instance(_ => Structure.Primitive)
+  given booleanInstance: EmptinessChecker[Boolean] = instance(_ => Structure.Primitive)
+
+  given bigIntInstance: EmptinessChecker[BigInt]         = instance(_ => Structure.Primitive)
+  given bigDecimalInstance: EmptinessChecker[BigDecimal] = instance(_ => Structure.Primitive)
 
   given [A](using aInstance: EmptinessChecker[A]): EmptinessChecker[Option[A]] =
     instance(opt => opt.map(aInstance.structureOf).getOrElse(Structure.Null))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,70 +16,79 @@
 
 package api.utils
 
+import api.utils.NestedJsonReads.*
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import api.utils.NestedJsonReads.*
 
 class NestedJsonReadsSpec extends UnitSpec {
 
   val firstOutput: JsValue = Json.parse("""{
-      | "a" : {
-      |   "b" : {
-      |     "c" : "string"
-      |   },
-      |   "i" : {
-      |     "e" : "example"
-      |   }
-      |  }
-      |}""".stripMargin)
+                                          | "a" : {
+                                          |   "b" : {
+                                          |     "c" : "string"
+                                          |   },
+                                          |   "i" : {
+                                          |     "e" : "example"
+                                          |   }
+                                          |  }
+                                          |}""".stripMargin)
 
   val secondOutput: JsValue = Json.parse("""{
-      | "a" : {
-      |   "b" : {
-      |     "c" : "string"
-      |   },
-      |   "c" : {
-      |     "e" : "example"
-      |   }
-      |  }
-      |}""".stripMargin)
+                                           | "a" : {
+                                           |   "b" : {
+                                           |     "c" : "string"
+                                           |   },
+                                           |   "c" : {
+                                           |     "e" : "example"
+                                           |   }
+                                           |  }
+                                           |}""".stripMargin)
 
   val thirdOutput: JsValue = Json.parse("""{
-      | "a" : {
-      |   "b" : {
-      |     "c" : "string"
-      |   },
-      |   "c" : {
-      |     "e" : 2
-      |   }
-      |  }
-      |}""".stripMargin)
+                                          | "a" : {
+                                          |   "b" : {
+                                          |     "c" : "string"
+                                          |   },
+                                          |   "c" : {
+                                          |     "e" : 2
+                                          |   }
+                                          |  }
+                                          |}""".stripMargin)
 
   val fourthOutput: JsValue = Json.parse("""{
-      | "a" : {
-      |   "b" : {
-      |     "c" : "string"
-      |   },
-      |   "c" : {
-      |   }
-      |  }
-      |}""".stripMargin)
+                                           | "a" : {
+                                           |   "b" : {
+                                           |     "c" : "string"
+                                           |   },
+                                           |   "c" : {
+                                           |   }
+                                           |  }
+                                           |}""".stripMargin)
 
   val jsonWithNull: JsValue = Json.parse("""{
-      | "a" : {
-      |   "b" : {
-      |     "c" : "string"
-      |   },
-      |   "c" : {
-      |     "e" : null
-      |   }
-      |  }
-      |}""".stripMargin)
+                                           | "a" : {
+                                           |   "b" : {
+                                           |     "c" : "string"
+                                           |   },
+                                           |   "c" : {
+                                           |     "e" : null
+                                           |   }
+                                           |  }
+                                           |}""".stripMargin)
 
   "Valid Json" should {
 
     "return JsSuccess" in {
       firstOutput.validate[Test] shouldBe a[JsSuccess[?]]
+    }
+  }
+
+  "An empty JsPath" should {
+    "return a JsError with error.path.empty" in {
+      val empty                            = JsPath
+      val result: JsResult[Option[String]] = empty.readNestedNullable[String].reads(Json.obj("a" -> "b"))
+      result shouldBe a[JsError]
+      result.asInstanceOf[JsError].errors.head._2.exists(_.message == "error.path.empty") shouldBe true
     }
   }
 
@@ -102,13 +111,13 @@ class NestedJsonReadsSpec extends UnitSpec {
   }
 
   "Path with an invalid data type" should {
-    "return a None " in {
+    "return a None" in {
       thirdOutput.validate[Test] shouldBe a[JsError]
     }
   }
 
   "Empty path" should {
-    "return a None " in {
+    "return a None" in {
       fourthOutput.validate[Test] shouldBe a[JsSuccess[?]]
     }
   }

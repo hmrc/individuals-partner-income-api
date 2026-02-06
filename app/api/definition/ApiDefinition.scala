@@ -16,9 +16,9 @@
 
 package api.definition
 
-import play.api.libs.json.{Format, Json, OFormat}
 import api.routing.Version
 import api.utils.enums.Enums
+import play.api.libs.json.{Format, Json, OFormat}
 
 enum APIStatus {
   case ALPHA
@@ -61,4 +61,10 @@ case class APIDefinition(name: String,
 
 object APIDefinition {
   given OFormat[APIDefinition] = Json.format[APIDefinition]
+}
+
+case class Definition(api: APIDefinition)
+
+object Definition {
+  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
 }

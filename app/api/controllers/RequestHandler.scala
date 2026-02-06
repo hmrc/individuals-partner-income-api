@@ -16,6 +16,15 @@
 
 package api.controllers
 
+import api.config.AppConfig
+import api.config.Deprecation.Deprecated
+import api.controllers.validators.Validator
+import api.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
+import api.models.outcomes.ResponseWrapper
+import api.routing.Version
+import api.services.ServiceOutcome
+import api.utils.DateUtils.longDateTimestampGmt
+import api.utils.Logging
 import cats.data.EitherT
 import cats.data.Validated.Valid
 import cats.implicits.*
@@ -23,16 +32,6 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import api.config.AppConfig
-import api.config.Deprecation.Deprecated
-import api.controllers.validators.Validator
-import api.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
-import api.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
-import api.models.outcomes.ResponseWrapper
-import api.routing.Version
-import api.services.ServiceOutcome
-import api.utils.DateUtils.longDateTimestampGmt
-import api.utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,9 +69,6 @@ object RequestHandler {
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
 
-    def withResponseModifier(responseModifier: Output => Output): RequestHandlerBuilder[Input, Output] =
-      copy(responseModifier = Option(responseModifier))
-
     /** Shorthand for
       * {{{
       * withResultCreator(ResultCreator.plainJson(successStatus))
@@ -91,27 +87,6 @@ object RequestHandler {
 
     def withResultCreator(resultCreator: ResultCreator[Input, Output]): RequestHandlerBuilder[Input, Output] =
       copy(resultCreator = resultCreator)
-
-    /** Shorthand for
-      * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
-      * }}}
-      */
-    def withHateoasResultFrom[HData <: HateoasData](
-        hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(implicit
-        linksFactory: HateoasLinksFactory[Output, HData],
-        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
-
-    /** Shorthand for
-      * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
-      * }}}
-      */
-    def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(implicit
-        linksFactory: HateoasLinksFactory[Output, HData],
-        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {

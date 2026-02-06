@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package api.hateoas
+package api.utils
 
-import play.api.libs.json.{Json, Writes}
+class IdGeneratorSpec extends UnitSpec {
 
-case class Link(
-    href: String,
-    method: Method,
-    rel: String
-)
+  val generator        = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-object Link {
-  implicit val writes: Writes[Link] = Json.writes[Link]
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
+      }
+    }
+  }
+
 }

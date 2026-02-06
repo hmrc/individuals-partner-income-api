@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,18 @@
 
 package api.utils.enums
 
+import api.utils.UnitSpec
 import cats.Show
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.Inspectors
 import play.api.libs.json.*
-import api.utils.UnitSpec
 
 enum Enum {
-  case `enum-one`
-  case `enum-two`
-  case `enum-three`
+  case `enum-one`, `enum-two`, `enum-three`
 }
 
 object Enum {
-  given Format[Enum] = Enums.format[Enum](values)
+  given Format[Enum] = Enums.format(values)
 }
 
 case class Foo[A](someField: A)
@@ -42,42 +40,57 @@ class EnumsSpec extends UnitSpec with Inspectors {
 
   import Enum.*
 
-  given Arbitrary[Enum] = Arbitrary[Enum](Gen.oneOf(values.toList))
+  given Arbitrary[Enum] = Arbitrary(Gen.oneOf(values.toList))
 
-  "SealedTraitEnumJson" must {
+  "EnumJson" must {
 
     "check toString assumption" in {
       `enum-two`.toString shouldBe "enum-two"
     }
 
-    def json(value: Enum): JsValue = Json.parse(s"""
+    def json(value: Enum): JsValue = Json.parse(
+      s"""
          |{
          | "someField": "$value"
          |}
-          """.stripMargin)
+      """.stripMargin
+    )
 
     "generates reads" in {
-      forAll(values.toList) { (value: Enum) =>
+      forAll(values.toList) { value =>
         json(value).as[Foo[Enum]] shouldBe Foo(value)
       }
     }
 
     "generates writes" in {
-      forAll(values.toList) { (value: Enum) =>
+      forAll(values.toList) { value =>
         Json.toJson(Foo(value)) shouldBe json(value)
       }
     }
 
+    "read using default Show" in {
+      val enumReads: Reads[Enum] = Enums.reads(values)
+
+      enumReads.reads(JsString("enum-one")) shouldBe JsSuccess(`enum-one`)
+      enumReads.reads(JsString("unknown")) shouldBe a[JsError]
+    }
+
+    "write using default Show" in {
+      val enumWrites: Writes[Enum] = Enums.writes[Enum]
+
+      enumWrites.writes(`enum-two`) shouldBe JsString("enum-two")
+    }
+
     "allow roundtrip" in {
-      forAll(values.toList) { (value: Enum) =>
-        val foo = Foo(value)
+      forAll(values.toList) { value =>
+        val foo: Foo[Enum] = Foo(value)
         Json.toJson(foo).as[Foo[Enum]] shouldBe foo
       }
     }
 
     "allows external parse by name" in {
-      Enums.parser[Enum](values).lift("enum-one") shouldBe Some(`enum-one`)
-      Enums.parser[Enum](values).lift("unknown") shouldBe None
+      Enums.parser(values).lift("enum-one") shouldBe Some(`enum-one`)
+      Enums.parser(values).lift("unknown") shouldBe None
     }
 
     "allows alternative names (specified by method)" in {
@@ -89,51 +102,60 @@ class EnumsSpec extends UnitSpec with Inspectors {
       }
 
       object Enum2 {
-        given Show[Enum2]   = Show.show[Enum2](_.altName)
-        given Format[Enum2] = Enums.format[Enum2](values)
+        given Show[Enum2] = Show.show[Enum2](_.altName)
 
+        given Format[Enum2] = Enums.format(values)
       }
 
       import Enum2.*
 
-      val json = Json.parse("""
+      val json: JsValue = Json.parse(
+        """
           |{
           | "someField": "one"
-          |}""".stripMargin)
+          |}
+        """.stripMargin
+      )
 
-      json.as[Foo[Enum2]] shouldBe Foo(Enum2.`enum-one`)
-      Json.toJson(Foo[Enum2](Enum2.`enum-one`)) shouldBe json
+      json.as[Foo[Enum2]] shouldBe Foo(`enum-one`)
+      Json.toJson(Foo[Enum2](`enum-one`)) shouldBe json
     }
 
     "detects badly formatted values" in {
-      val badJson = Json.parse(s"""
-           |{
-           | "someField": "unknown"
-           |}
-           |""".stripMargin)
+      val badJson: JsValue = Json.parse(
+        """
+          |{
+          | "someField": "unknown"
+          |}
+        """.stripMargin
+      )
 
       badJson.validate[Foo[Enum]] shouldBe JsError(__ \ "someField", JsonValidationError("error.expected.Enum"))
     }
 
     "detects type errors" in {
-      val badJson = Json.parse(s"""
-           |{
-           | "someField": 123
-           |}
-           |""".stripMargin)
+      val badJson: JsValue = Json.parse(
+        """
+          |{
+          | "someField": 123
+          |}
+        """.stripMargin
+      )
 
       badJson.validate[Foo[Enum]] shouldBe JsError(__ \ "someField", JsonValidationError("error.expected.jsstring"))
     }
 
-    "only work for sealed trait singletons (objects)" in {
-      assertTypeError("""
-        |enum NotEnum {
-        |   case ObjectOne
-        |   case CaseClassTwo(value: String)
-        |}
-        |
-        |Enums.format(NotEnum.values)
-        """.stripMargin)
+    "only work for enums with singleton cases (no parameters)" in {
+      assertTypeError(
+        """
+          |      enum NotEnum {
+          |         case ObjectOne
+          |         case CaseClassTwo(value: String)
+          |      }
+          |
+          |      Enums.format(NotEnum.values)
+        """.stripMargin
+      )
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 
 package api.models.domain
 
-import play.api.libs.json.{Json, OWrites, Reads}
 import api.utils.UnitSpec
+import play.api.libs.json.{Json, OWrites, Reads}
 
 class TimestampSpec extends UnitSpec {
 
   private val response = AnyDownstreamResponse(3, "payments", Timestamp("2023-01-20T01:20:30.000Z"))
 
   private val responseJs = Json.parse("""
-      | {
-      |   "amount": 3,
-      |   "category": "payments",
-      |   "lastUpdated": "2023-01-20T01:20:30.000Z"
-      | }
-      | """.stripMargin)
+                                        | {
+                                        |   "amount": 3,
+                                        |   "category": "payments",
+                                        |   "lastUpdated": "2023-01-20T01:20:30.000Z"
+                                        | }
+                                        | """.stripMargin)
 
   private val responseJsNoMillis = Json.parse(""" {
-      |   "amount": 3,
-      |   "category": "payments",
-      |   "lastUpdated": "2023-01-20T01:20:30Z"
-      | }
-      | """.stripMargin)
+                                                |   "amount": 3,
+                                                |   "category": "payments",
+                                                |   "lastUpdated": "2023-01-20T01:20:30Z"
+                                                | }
+                                                | """.stripMargin)
 
   "Timestamp.apply()" should {
     "parse correctly and return a ts with milliseconds" when {
@@ -68,6 +68,12 @@ class TimestampSpec extends UnitSpec {
           Timestamp("2021-06-17T10:53:38.1234Z").value shouldBe "2021-06-17T10:53:38.123Z"
         }
       }
+    }
+  }
+
+  "Timestamp.toString" should {
+    "return the string value" in {
+      Timestamp("2023-01-20T01:20:30.000Z").toString shouldBe "2023-01-20T01:20:30.000Z"
     }
   }
 

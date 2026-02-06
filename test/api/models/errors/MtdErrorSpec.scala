@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package api.models.errors
 
+import api.utils.UnitSpec
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
-import api.utils.UnitSpec
 
 class MtdErrorSpec extends UnitSpec {
 
@@ -34,6 +34,15 @@ class MtdErrorSpec extends UnitSpec {
           |}
         """.stripMargin
       )
+    }
+  }
+
+  "maybeWithPath" should {
+    "add a path to the error" when {
+      "a path is provided" in {
+        val result = error.maybeWithPath(Some("path")).paths
+        result shouldBe Some(List("path"))
+      }
     }
   }
 

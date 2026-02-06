@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,17 @@ class AppConfigSpec extends UnitSpec {
         expectedHipEnvHeaders
       )
     }
+
+    "return the apiDocumentationUrl" when {
+      "it is not specified" in {
+        val changedAppConfig = appConfig("", None)
+        changedAppConfig.apiDocumentationUrl shouldBe s"https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/${changedAppConfig.appName}"
+      }
+      "it is specified" in {
+        val changedAppConfig = appConfig("", Some("test123"))
+        changedAppConfig.apiDocumentationUrl shouldBe "test123"
+      }
+    }
   }
 
   "endpointsEnabled" when {
@@ -89,7 +100,7 @@ class AppConfigSpec extends UnitSpec {
       "return true" in {
         val appConfigWithEnabledVersion = appConfig(
           """
-            |    6.0 {
+            |    1.0 {
             |      status = "BETA"
             |      endpoints {
             |        enabled = true
@@ -105,7 +116,26 @@ class AppConfigSpec extends UnitSpec {
             |
             |""".stripMargin
         )
-        val result = appConfigWithEnabledVersion.endpointsEnabled("6.0")
+        val result = appConfigWithEnabledVersion.endpointsEnabled("1.0")
+        result shouldBe true
+      }
+    }
+  }
+
+  "allowRequestCannotBeFulfilledHeader" when {
+    "the API version allows request cannot be fulfilled header" should {
+      "return true" in {
+        val appConfigWithAllowRequestCannotBeFulfilledHeader = appConfig(
+          """
+            |    1.0 {
+            |      endpoints {
+            |        allow-request-cannot-be-fulfilled-header = true
+            |      }
+            |    }
+            |""".stripMargin
+        )
+
+        val result = appConfigWithAllowRequestCannotBeFulfilledHeader.allowRequestCannotBeFulfilledHeader(Version1)
         result shouldBe true
       }
     }
@@ -116,7 +146,7 @@ class AppConfigSpec extends UnitSpec {
       "return true" in {
         val appConfigWithReleasedVersion = appConfig(
           """
-            |    6.0 {
+            |    1.0 {
             |      status = "BETA"
             |      endpoints {
             |        enabled = true
@@ -131,7 +161,7 @@ class AppConfigSpec extends UnitSpec {
             |    }
             |""".stripMargin
         )
-        val result = appConfigWithReleasedVersion.endpointReleasedInProduction("6.0", "create-something")
+        val result = appConfigWithReleasedVersion.endpointReleasedInProduction("1.0", "create-something")
         result shouldBe true
       }
     }
@@ -140,7 +170,7 @@ class AppConfigSpec extends UnitSpec {
       "return true" in {
         val appConfigWithDisabledEndpoint = appConfig(
           """
-            |    6.0 {
+            |    1.0 {
             |      status = "BETA"
             |      endpoints {
             |        enabled = true
@@ -155,7 +185,7 @@ class AppConfigSpec extends UnitSpec {
             |    }
             |""".stripMargin
         )
-        val result = appConfigWithDisabledEndpoint.endpointReleasedInProduction("6.0", "amend-something")
+        val result = appConfigWithDisabledEndpoint.endpointReleasedInProduction("1.0", "amend-something")
         result shouldBe false
       }
     }
@@ -164,7 +194,7 @@ class AppConfigSpec extends UnitSpec {
       "return the value of endpointReleasedInProduction" in {
         val appConfigWithUnspecifiedEndpointStatus = appConfig(
           """
-            |    6.0 {
+            |    1.0 {
             |      status = "BETA"
             |      endpoints {
             |        enabled = true
@@ -180,7 +210,7 @@ class AppConfigSpec extends UnitSpec {
             |
             |""".stripMargin
         )
-        val result = appConfigWithUnspecifiedEndpointStatus.endpointReleasedInProduction("6.0", "delete-something")
+        val result = appConfigWithUnspecifiedEndpointStatus.endpointReleasedInProduction("1.0", "delete-something")
         result shouldBe true
       }
     }
@@ -374,38 +404,43 @@ class AppConfigSpec extends UnitSpec {
     }
   }
 
-  private def appConfig(versionConf: String): AppConfig = {
+  private def appConfig(versionConf: String, apiDocumentationUrl: Option[String] = None): AppConfig = {
     val conf = ConfigFactory.parseString(
-      """
-        |  appName = "any-name-api"
-        |  appUrl = "http://localhost:9999"
-        |  
-        |  api {
-        |""".stripMargin ++
+      s"""
+         |  appName = "any-name-api"
+         |  appUrl = "http://localhost:7767"
+         |  
+         |  api {
+         |""".stripMargin ++
 
         versionConf ++
 
-        """
-          |  }
-          |  
-          |  microservice {
-          |    services {
-          |      mtd-id-lookup {
-          |        host = localhost
-          |        port = 9769
-          |      }
-          |
-          |      hip {
-          |        host = 127.0.0.1
-          |        port = 8888
-          |        env = Prod
-          |        clientId = "hipClientId"
-          |        clientSecret = "hipClientSecret"
-          |        environmentHeaders = ["Accept", "Gov-Test-Scenario", "Location", "X-Request-Timestamp", "X-Session-Id", "X-Request-Id"]
-          |      }
-          |    }
-          |  }
-          |""".stripMargin
+        s"""
+           |${apiDocumentationUrl match {
+            case Some(url) => s"documentation-url = $url"
+            case _         => ""
+          }}
+           |  }
+           |
+           |  
+           |  microservice {
+           |    services {
+           |      mtd-id-lookup {
+           |        host = localhost
+           |        port = 9769
+           |      }
+           |
+           |       hip {
+           |        host = 127.0.0.1
+           |        port = 8888
+           |        env = Prod
+           |        clientId = "hipClientId"
+           |        clientSecret = "hipClientSecret"
+           |        environmentHeaders = ["Accept", "Gov-Test-Scenario", "Location", "X-Request-Timestamp", "X-Session-Id", "X-Request-Id"]
+           |      }
+           |    }
+           |  }
+           |""".stripMargin
     )
 
     val configuration  = Configuration(conf)
