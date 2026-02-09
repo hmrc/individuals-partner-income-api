@@ -25,9 +25,9 @@ components:
       name: partnershipUtr
       in: path
       description: |
-        A Unique Taxpayer Reference (UTR) for the partnership.
-        <p>Must conform to the regular expression `^[0-9]{10}$`
+        A Unique Taxpayer Reference (UTR) for the partnership.<p>Must conform to the regular expression `^[0-9]{10}$`
       schema:
         type: string
+        pattern: ^[0-9]{10}$
         example: 4564564564
       required: true
