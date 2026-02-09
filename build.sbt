@@ -1,25 +1,34 @@
+import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
+val appName = "individuals-partner-income-api"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.3.6"
-ThisBuild / scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"
+ThisBuild / scalaVersion := "3.5.2"
+ThisBuild / scalacOptions ++= Seq("-Werror", "-Wconf:msg=Flag.*repeatedly:s")
 
-lazy val microservice = Project("individuals-partner-income-api", file("."))
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-    // suppress warnings in generated routes files
-    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalafmtOnCompile := true,
+    scalacOptions ++= List(
+      "-Wconf:src=routes/.*:s",
+      "-feature"
+    )
   )
-  .settings(CodeCoverageSettings.settings: _*)
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
+    Compile / unmanagedClasspath += baseDirectory.value / "resources"
   )
+  .settings(CodeCoverageSettings.settings)
+  .settings(PlayKeys.playDefaultPort := 7766)
 
 lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
-  .settings(libraryDependencies ++= AppDependencies.it)
+  .settings(Test / fork := true, Test / javaOptions += "-Dlogger.resource=logback-test.xml")
+  .settings(libraryDependencies ++= AppDependencies.itDependencies)

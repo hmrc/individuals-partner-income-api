@@ -29,6 +29,7 @@ precompiled
 project/metals.sbt
 project/project
 project/target
+/.bsp
 /RUNNING_PID
 server.pid
 /.settings
