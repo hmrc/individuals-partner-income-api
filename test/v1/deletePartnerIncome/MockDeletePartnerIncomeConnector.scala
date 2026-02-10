@@ -16,30 +16,27 @@
 
 package v1.deletePartnerIncome
 
-import api.config.AppConfig
-import api.connectors.DownstreamUri.HipUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser.*
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.DownstreamOutcome
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.client.HttpClientV2
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class DeletePartnerIncomeConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
+trait MockDeletePartnerIncomeConnector extends TestSuite with MockFactory {
 
-  def deletePartnerIncome(request: DeletePartnerIncomeRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  val connector: DeletePartnerIncomeConnector = mock[DeletePartnerIncomeConnector]
 
-    import request.*
+  object MockDeletePartnerIncomeConnector {
 
-    val downstreamUri = HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/income/partnerships/$nino?partnershipUTR=$partnershipUtr")
+    def deletePartnerIncome(deletePartnerIncomeRequestData: DeletePartnerIncomeRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (connector
+        .deletePartnerIncome(_: DeletePartnerIncomeRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(deletePartnerIncomeRequestData, *, *, *)
+    }
 
-    delete(downstreamUri)
   }
 
 }
