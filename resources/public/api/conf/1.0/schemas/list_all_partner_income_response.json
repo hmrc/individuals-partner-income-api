@@ -1,1 +1,40 @@
-{}
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Get a List of all Partner Income Submissions",
+  "description": "Get List of Partner Income Submissions",
+  "type": "object",
+  "properties": {
+    "partnerIncomeSubmissions": {
+      "type": "array",
+      "description": "An array containing details of all partner income submissions.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "partnershipUtr": {
+            "description": "A Unique Taxpayer Reference (UTR) for the partnership.",
+            "type": "string",
+            "example": "4564564564",
+            "pattern": "^[0-9]{10}$"
+          },
+          "partnershipName": {
+            "description": "The name of the partnership.",
+            "type": "string",
+            "example": "ABC Partnership",
+            "pattern": "^.{1,105}$",
+            "minimum": 1,
+            "maximum": 105
+          }
+        },
+        "required": [
+          "partnershipUtr",
+          "partnershipName"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "partnerIncomeSubmissions"
+  ],
+  "additionalProperties": false
+}
