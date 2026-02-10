@@ -17,25 +17,23 @@
 package v1.deletePartnerIncome
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolvePartnershipUtr, ResolveTaxYearMinimum}
+import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveNino, ResolvePartnershipUtr}
 import api.models.domain.TaxYear
-import api.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
 import v1.minimumTaxYear
 
+import java.time.Clock
 import javax.inject.Singleton
 
 @Singleton
-class DeletePartnerIncomeValidator(nino: String, taxYear: String, partnershipUtr: String) extends Validator[DeletePartnerIncomeRequestData] {
+class DeletePartnerIncomeValidator(nino: String, taxYear: String, partnershipUtr: String)(implicit clock: Clock = Clock.systemUTC)
+    extends Validator[DeletePartnerIncomeRequestData] {
 
-  def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] = {
-    ResolveTaxYearMinimum(
-      minimumTaxYear,
-      rangeError = RuleTaxYearRangeInvalidError
-    )(taxYear)
-  }
+  private def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] =
+    ResolveDetailedTaxYear(minimumTaxYear)(clock)(taxYear)
 
   def validate: Validated[Seq[MtdError], DeletePartnerIncomeRequestData] =
     (

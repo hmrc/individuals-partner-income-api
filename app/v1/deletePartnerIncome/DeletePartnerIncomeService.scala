@@ -40,19 +40,16 @@ class DeletePartnerIncomeService @Inject() (connector: DeletePartnerIncomeConnec
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"     -> InternalError,
       "INVALID_PARTNERSHIP_UTR"   -> PartnershipUtrFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> InternalError,
       "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
-    // TODO: What are these?
     val extraTysErrors = Map(
       "INVALID_CORRELATION_ID" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "TAX_YEAR_NOT_SUPPORTED" -> InternalError
     )
 
     errors ++ extraTysErrors
