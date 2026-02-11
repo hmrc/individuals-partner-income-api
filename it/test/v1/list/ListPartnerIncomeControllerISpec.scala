@@ -80,7 +80,7 @@ class ListPartnerIncomeControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          ("AA1123A", "2024-25", BAD_REQUEST, NinoFormatError),
+          ("AA1123A", "2026-27", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "invalid", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2026-28", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2025-26", BAD_REQUEST, RuleTaxYearNotSupportedError)
