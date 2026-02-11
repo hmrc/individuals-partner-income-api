@@ -16,6 +16,7 @@
 
 package api.controllers.validators.resolvers
 
+import api.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
 import api.utils.EmptinessChecker.field
