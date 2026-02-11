@@ -16,10 +16,17 @@
 
 package v1.list.model.response
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.*
+import play.api.libs.functional.syntax.*
 
-case class PartnerIncomeSubmission(partnershipUtr: String, partnerShipName: String)
+case class PartnerIncomeSubmission(partnershipUtr: String, partnershipName: String)
 
 object PartnerIncomeSubmission {
-  given OFormat[PartnerIncomeSubmission] = Json.format[PartnerIncomeSubmission]
+
+  given Reads[PartnerIncomeSubmission] = (
+    (JsPath \ "partnershipUTR").read[String] and
+      (JsPath \ "partnershipName").read[String]
+  )(PartnerIncomeSubmission.apply)
+
+  given OWrites[PartnerIncomeSubmission] = Json.writes[PartnerIncomeSubmission]
 }

@@ -39,7 +39,7 @@ class ListPartnerIncomeConnector @Inject() (val http: HttpClientV2, val appConfi
 
     import request.*
 
-    get(HipUri[ListPartnerIncomeResponse](s"/itsa/income-tax/v1/${taxYear.asTysDownstream}/income/partnerships/$nino/list"))
+    get(HipUri[ListPartnerIncomeResponse](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/income/partnerships/$nino/list"))
   }
 
 }

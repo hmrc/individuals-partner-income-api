@@ -30,6 +30,7 @@ class ListPartnerIncomeController @Inject() (val authService: EnrolmentsAuthServ
                                              val lookupService: MtdIdLookupService,
                                              cc: ControllerComponents,
                                              service: ListPartnerIncomeService,
+                                             validatorFactory: ListPartnerIncomeValidatorFactory,
                                              idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
@@ -45,7 +46,7 @@ class ListPartnerIncomeController @Inject() (val authService: EnrolmentsAuthServ
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = new ListPartnerIncomeValidator(nino, taxYear)
+      val validator = validatorFactory.validator(nino, taxYear)
 
       val requestHandler =
         RequestHandler
