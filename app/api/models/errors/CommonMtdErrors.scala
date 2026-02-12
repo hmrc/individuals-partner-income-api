@@ -25,6 +25,8 @@ object NinoFormatError extends MtdError("FORMAT_NINO", "The NINO format is inval
 
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The taxYear format is invalid", BAD_REQUEST)
 
+object PartnershipUtrFormatError extends MtdError("FORMAT_PARTNERSHIP_UTR", "The provided partnership UTR is invalid", BAD_REQUEST)
+
 object StartDateFormatError extends MtdError("FORMAT_START_DATE", "The provided Start date is invalid", BAD_REQUEST)
 
 object EndDateFormatError extends MtdError("FORMAT_END_DATE", "The provided End date is invalid", BAD_REQUEST)
@@ -87,6 +89,8 @@ object RuleDateRangeInvalidError extends MtdError(code = "RULE_DATE_RANGE_INVALI
 
 object RuleEndBeforeStartDateError
     extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The supplied accounting period end date is before the start date", BAD_REQUEST)
+
+object RuleOutsideAmendmentWindowError extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError

@@ -25,20 +25,17 @@ import cats.implicits.catsSyntaxTuple3Semigroupal
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
 import v1.minimumTaxYear
 
-import java.time.Clock
 import javax.inject.Singleton
 
 @Singleton
-class DeletePartnerIncomeValidator(nino: String, taxYear: String, partnershipUtr: String)(implicit clock: Clock = Clock.systemUTC)
-    extends Validator[DeletePartnerIncomeRequestData] {
+class DeletePartnerIncomeValidator(nino: String, taxYear: String, partnershipUtr: String) extends Validator[DeletePartnerIncomeRequestData] {
 
-  private def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] =
-    ResolveDetailedTaxYear(minimumTaxYear)(clock)(taxYear)
+  private val resolveTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], DeletePartnerIncomeRequestData] =
     (
       ResolveNino(nino),
-      resolvedTaxYear(taxYear),
+      resolveTaxYear(taxYear),
       ResolvePartnershipUtr(partnershipUtr)
     ).mapN(DeletePartnerIncomeRequestData.apply)
 

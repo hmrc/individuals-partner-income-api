@@ -21,7 +21,6 @@ import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
-import v1.models.{PartnershipUtrFormatError, RuleOutsideAmendmentWindowError}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,23 +35,16 @@ class DeletePartnerIncomeService @Inject() (connector: DeletePartnerIncomeConnec
 
   }
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
-    val errors = Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-      "INVALID_PARTNERSHIP_UTR"   -> PartnershipUtrFormatError,
-      "NO_DATA_FOUND"             -> NotFoundError,
-      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError,
-      "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-
-    val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED" -> InternalError
-    )
-
-    errors ++ extraTysErrors
-  }
+  private val downstreamErrorMap: Map[String, MtdError] = Map(
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+    "INVALID_CORRELATION_ID"    -> InternalError,
+    "INVALID_PARTNERSHIP_UTR"   -> PartnershipUtrFormatError,
+    "NO_DATA_FOUND"             -> NotFoundError,
+    "TAX_YEAR_NOT_SUPPORTED"    -> InternalError,
+    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError,
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
+  )
 
 }

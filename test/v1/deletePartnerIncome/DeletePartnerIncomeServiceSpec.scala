@@ -21,7 +21,6 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
-import v1.models.*
 
 import scala.concurrent.Future
 
@@ -72,19 +71,16 @@ class DeletePartnerIncomeServiceSpec extends ServiceSpec {
       val errors = List(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("INVALID_TAX_YEAR", TaxYearFormatError),
+        ("INVALID_CORRELATION_ID", InternalError),
         ("INVALID_PARTNERSHIP_UTR", PartnershipUtrFormatError),
         ("NO_DATA_FOUND", NotFoundError),
+        ("TAX_YEAR_NOT_SUPPORTED", InternalError),
         ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError),
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)
       )
 
-      val extraTysErrors = List(
-        ("INVALID_CORRELATION_ID", InternalError),
-        ("TAX_YEAR_NOT_SUPPORTED", InternalError)
-      )
-
-      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
+      errors.foreach(args => serviceError.tupled(args))
     }
 
   }

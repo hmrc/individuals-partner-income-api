@@ -27,7 +27,6 @@ import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
-import v1.models.PartnershipUtrFormatError
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,7 +43,7 @@ class DeletePartnerIncomeControllerSpec
   private val taxYear        = "2026-27"
   private val requestData    = DeletePartnerIncomeRequestData(parsedNino, TaxYear.fromMtd(taxYear), PartnershipUtr(partnershipUtr))
 
-  "delete" should {
+  "deletePartnerIncome" should {
     "return NoContent" when {
       "the request is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
@@ -87,7 +86,7 @@ class DeletePartnerIncomeControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(validNino, taxYear, partnershipUtr)(fakeRequest)
+    protected def callController(): Future[Result] = controller.deletePartnerIncome(validNino, taxYear, partnershipUtr)(fakeRequest)
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

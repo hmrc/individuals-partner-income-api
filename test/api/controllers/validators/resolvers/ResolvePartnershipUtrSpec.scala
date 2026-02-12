@@ -17,9 +17,9 @@
 package api.controllers.validators.resolvers
 
 import api.models.domain.PartnershipUtr
+import api.models.errors.PartnershipUtrFormatError
 import api.utils.UnitSpec
 import cats.data.Validated.{Invalid, Valid}
-import v1.models.PartnershipUtrFormatError
 
 class ResolvePartnershipUtrSpec extends UnitSpec {
 

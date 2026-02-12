@@ -44,7 +44,7 @@ class DeletePartnerIncomeController @Inject() (val authService: EnrolmentsAuthSe
       endpointName = "deletePartnerIncome"
     )
 
-  def delete(nino: String, taxYear: String, partnershipUtr: String): Action[AnyContent] =
+  def deletePartnerIncome(nino: String, taxYear: String, partnershipUtr: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 

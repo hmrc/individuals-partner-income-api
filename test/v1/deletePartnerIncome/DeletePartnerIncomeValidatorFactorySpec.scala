@@ -21,7 +21,6 @@ import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
 import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
-import v1.models.PartnershipUtrFormatError
 
 class DeletePartnerIncomeValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 

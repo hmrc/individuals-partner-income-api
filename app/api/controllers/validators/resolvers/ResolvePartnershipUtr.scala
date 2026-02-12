@@ -17,9 +17,8 @@
 package api.controllers.validators.resolvers
 
 import api.models.domain.PartnershipUtr
-import api.models.errors.MtdError
+import api.models.errors.{MtdError, PartnershipUtrFormatError}
 import cats.data.Validated
-import v1.models.PartnershipUtrFormatError
 
 object ResolvePartnershipUtr extends ResolverSupport {
 
