@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package v1.retrieveHelloWorld
+package api.controllers.validators.resolvers
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import api.models.domain.PartnershipUtr
+import api.models.errors.{MtdError, PartnershipUtrFormatError}
+import cats.data.Validated
 
-import javax.inject.{Inject, Singleton}
+object ResolvePartnershipUtr extends ResolverSupport {
 
-@Singleton()
-class HelloWorldController @Inject() (
-    cc: ControllerComponents
-) extends BackendController(cc):
+  private val partnershipUtrRegex = "^[0-9]{10}$".r
 
-  val hello: Action[AnyContent] =
-    Action { implicit request =>
-      Ok("Hello world")
-    }
+  val resolver: Resolver[String, PartnershipUtr] =
+    ResolveStringPattern(partnershipUtrRegex, PartnershipUtrFormatError).resolver.map(PartnershipUtr.apply)
+
+  def apply(value: String): Validated[Seq[MtdError], PartnershipUtr] = resolver(value)
+
+}

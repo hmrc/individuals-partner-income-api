@@ -17,8 +17,8 @@
 package api.connectors
 
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.{Json, Writes}
-import play.api.libs.ws.writeableOf_JsValue
+import play.api.libs.json.*
+import play.api.libs.ws.*
 import api.config.AppConfig
 import api.utils.{Logging, UrlUtils}
 import uk.gov.hmrc.http.client.HttpClientV2

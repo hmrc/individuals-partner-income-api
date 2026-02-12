@@ -1,1 +1,1 @@
-GET        /hello-world        v1.retrieveHelloWorld.HelloWorldController.hello
+DELETE        /:nino/:taxYear/partnership/:partnershipUtr        v1.deletePartnerIncome.DeletePartnerIncomeController.deletePartnerIncome(nino: String, taxYear: String, partnershipUtr: String)

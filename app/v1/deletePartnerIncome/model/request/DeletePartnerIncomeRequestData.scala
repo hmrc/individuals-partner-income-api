@@ -14,24 +14,8 @@
  * limitations under the License.
  */
 
-package v1.retrieveHelloWorld
+package v1.deletePartnerIncome.model.request
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.http.Status
-import play.api.test.Helpers.*
-import play.api.test.{FakeRequest, Helpers}
+import api.models.domain.{Nino, PartnershipUtr, TaxYear}
 
-class HelloWorldControllerSpec extends AnyWordSpec with Matchers {
-
-  private val fakeRequest = FakeRequest("GET", "/")
-  private val controller  = new HelloWorldController(Helpers.stubControllerComponents())
-
-  "GET /" should {
-    "return 200" in {
-      val result = controller.hello()(fakeRequest)
-      status(result) shouldBe Status.OK
-    }
-  }
-
-}
+case class DeletePartnerIncomeRequestData(nino: Nino, taxYear: TaxYear, partnershipUtr: PartnershipUtr)
