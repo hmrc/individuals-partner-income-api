@@ -30,12 +30,10 @@ import javax.inject.Singleton
 @Singleton
 class DeletePartnerIncomeValidator(nino: String, taxYear: String, partnershipUtr: String) extends Validator[DeletePartnerIncomeRequestData] {
 
-  private val resolveTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
-
   def validate: Validated[Seq[MtdError], DeletePartnerIncomeRequestData] =
     (
       ResolveNino(nino),
-      resolveTaxYear(taxYear),
+      ResolveDetailedTaxYear(minimumTaxYear).apply(taxYear),
       ResolvePartnershipUtr(partnershipUtr)
     ).mapN(DeletePartnerIncomeRequestData.apply)
 
