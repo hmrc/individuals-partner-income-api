@@ -1,14 +1,14 @@
 [
   {
-    "submittedOn": "2026-02-11T15:18:48.685Z",
-    "partnershipUtr": "1223456789",
-    "partnershipName": "string",
-    "startDate": "2026-02-11",
-    "endDate": "2026-02-11",
+    "submittedOn": "2026-08-24T14:15:22.544Z",
+    "partnershipUtr": "4564564564",
+    "partnershipName": "ABC Partnership",
+    "startDate": "2026-06-24",
+    "endDate": "2026-07-24",
     "cashBasis": true,
     "partnershipTrades": [
       {
-        "tradeDescription": "string",
+        "tradeDescription": "Consultancy Services",
         "tradingOrProfessionalProfits": {
           "shareOfProfitOrLoss": 99999999999.99,
           "basisAdjustment": 99999999999.99,
