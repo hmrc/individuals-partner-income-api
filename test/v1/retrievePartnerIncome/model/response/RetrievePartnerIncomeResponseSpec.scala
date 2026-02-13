@@ -35,8 +35,12 @@ class RetrievePartnerIncomeResponseSpec extends UnitSpec {
       downstreamJsonInvalidFields.validate[RetrievePartnerIncomeResponse] shouldBe a[JsError]
     }
 
-    "produce a JsError given a downstream Json is not an array containing the response object" in {
+    "produce a JsError if the downstream Json is not an array containing the response object" in {
       downstreamJsonNotInArray.validate[RetrievePartnerIncomeResponse] shouldBe a[JsError]
+    }
+
+    "produce a JsError if the downstream Json is an array containing more than one item" in {
+      downstreamJsonMultipleObjectsInArray.validate[RetrievePartnerIncomeResponse] shouldBe a[JsError]
     }
   }
 

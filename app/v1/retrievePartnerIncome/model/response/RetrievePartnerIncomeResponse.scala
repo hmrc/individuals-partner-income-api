@@ -42,7 +42,7 @@ case class RetrievePartnerIncomeResponse(
 
 object RetrievePartnerIncomeResponse extends JsonUtils {
 
-  private val retrievePartnerIncomeResponseReads = (
+  private val singleReads: Reads[RetrievePartnerIncomeResponse] = (
     (JsPath \ "submittedOn").read[String] and
       (JsPath \ "partnershipUTR").read[String] and
       (JsPath \ "partnershipName").read[String] and
@@ -62,13 +62,12 @@ object RetrievePartnerIncomeResponse extends JsonUtils {
       (JsPath \ "taxPaidAndDeductions").readNullable[TaxPaidAndDeductions]
   )(RetrievePartnerIncomeResponse.apply)
 
-  // Remove object from array
-  implicit val reads: Reads[RetrievePartnerIncomeResponse] = Reads {
-    case JsArray(values) if values.nonEmpty =>
-      values.head.validate(retrievePartnerIncomeResponseReads)
-    case _ =>
-      JsError("Expected downstream JSON to be an array containing the response object")
-  }
+  // Extract single item from the array
+  implicit val reads: Reads[RetrievePartnerIncomeResponse] = Reads
+    .seq(singleReads)
+    .collect {
+      JsonValidationError("Expected downstream JSON to be an array containing exactly one item")
+    } { case Seq(single) => single }
 
   implicit val writes: OWrites[RetrievePartnerIncomeResponse] = Json.writes[RetrievePartnerIncomeResponse]
 }

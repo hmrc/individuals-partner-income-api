@@ -417,6 +417,31 @@ object RetrievePartnerIncomeFixtures {
        |}
        |""".stripMargin)
 
+  val downstreamJsonMultipleObjectsInArray: JsValue = Json.parse("""
+      |[
+      |  {
+      |    "submittedOn": "2026-08-24T14:15:22.544Z",
+      |    "partnershipUTR": "4564564564",
+      |    "partnershipName": "ABC Partnership",
+      |    "partnershipTrades": [
+      |      {
+      |        "tradeDescription": "Consultancy Services"
+      |      }
+      |    ]
+      |  },
+      |  {
+      |    "submittedOn": "2026-08-25T14:15:22.544Z",
+      |    "partnershipUTR": "1234567890",
+      |    "partnershipName": "DEF Partnership",
+      |    "partnershipTrades": [
+      |      {
+      |        "tradeDescription": "Consultancy Services"
+      |      }
+      |    ]
+      |  }
+      |]
+      |""".stripMargin)
+
   val mtdJson: JsValue = Json.parse("""
        |{
        |  "submittedOn": "2026-08-24T14:15:22.544Z",
