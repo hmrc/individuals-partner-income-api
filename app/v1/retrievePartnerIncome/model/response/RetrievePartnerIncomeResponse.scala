@@ -62,12 +62,12 @@ object RetrievePartnerIncomeResponse extends JsonUtils {
       (JsPath \ "taxPaidAndDeductions").readNullable[TaxPaidAndDeductions]
   )(RetrievePartnerIncomeResponse.apply)
 
-  // TODO: Remove from array - does this work?
+  // Remove object from array
   implicit val reads: Reads[RetrievePartnerIncomeResponse] = Reads {
     case JsArray(values) if values.nonEmpty =>
       values.head.validate(retrievePartnerIncomeResponseReads)
-    case json =>
-      json.validate(retrievePartnerIncomeResponseReads)
+    case _ =>
+      JsError("Expected downstream JSON to be an array containing the response object")
   }
 
   implicit val writes: OWrites[RetrievePartnerIncomeResponse] = Json.writes[RetrievePartnerIncomeResponse]

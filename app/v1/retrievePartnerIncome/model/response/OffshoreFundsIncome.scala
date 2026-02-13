@@ -20,10 +20,10 @@ import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class OffshoreFundsIncome(
-                                 shareOfOffshoreFundsIncome: Option[BigDecimal],
-                                 offshoreFundsIncomeAdjustment: Option[BigDecimal],
-                                 totalForeignTaxTakenOff: Option[BigDecimal],
-                                 shareOfTaxableIncome: Option[BigDecimal]
+    shareOfOffshoreFundsIncome: Option[BigDecimal],
+    offshoreFundsIncomeAdjustment: Option[BigDecimal],
+    totalForeignTaxTakenOff: Option[BigDecimal],
+    shareOfTaxableIncome: Option[BigDecimal]
 )
 
 object OffshoreFundsIncome {
