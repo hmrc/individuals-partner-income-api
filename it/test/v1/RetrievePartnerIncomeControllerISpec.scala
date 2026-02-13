@@ -23,11 +23,13 @@ import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import v1.retrievePartnerIncome.RetrievePartnerIncomeFixtures
 
-class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
+class RetrievePartnerIncomeControllerISpec extends IntegrationBaseSpec {
 
   private def errorBody(code: String): String =
     s"""
@@ -44,25 +46,26 @@ class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
       |}
     """.stripMargin
 
-  "Calling the Delete Partner Income endpoint" should {
-    "return a 204 status code" when {
-      "a valid request is made" in new Test {
+  "Calling the Retrieve Partner Income endpoint" should {
+    "return a 200 status code" when {
+      "a valid request is made and a success response body is returned" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           MtdIdLookupStub.ninoFound(nino)
           AuthStub.authorised()
 
           DownstreamStub.onSuccess(
-            method = DownstreamStub.DELETE,
+            method = DownstreamStub.GET,
             uri = downstreamUri,
             queryParams = Map("partnershipUTR" -> partnershipUtr),
-            status = NO_CONTENT,
-            body = JsObject.empty
+            status = OK,
+            body = RetrievePartnerIncomeFixtures.downstreamJson
           )
         }
 
-        val response: WSResponse = await(request().delete())
-        response.status shouldBe NO_CONTENT
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.body shouldBe RetrievePartnerIncomeFixtures.mtdJson.toString
       }
     }
 
@@ -85,7 +88,7 @@ class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
               AuthStub.authorised()
             }
 
-            val response: WSResponse = await(request().delete())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
           }
         }
@@ -110,7 +113,7 @@ class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
               AuthStub.authorised()
 
               DownstreamStub.onError(
-                method = DownstreamStub.DELETE,
+                method = DownstreamStub.GET,
                 uri = downstreamUri,
                 queryParams = Map("partnershipUTR" -> partnershipUtr),
                 errorStatus = downstreamStatus,
@@ -118,7 +121,7 @@ class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
               )
             }
 
-            val response: WSResponse = await(request().delete())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -131,7 +134,6 @@ class DeletePartnerIncomeControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_PARTNERSHIP_UTR", BAD_REQUEST, PartnershipUtrFormatError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", INTERNAL_SERVER_ERROR, InternalError),
-          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
