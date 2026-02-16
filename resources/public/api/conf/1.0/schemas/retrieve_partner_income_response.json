@@ -118,7 +118,7 @@
                 "example": "5000.99"
               },
               "lossesBroughtForwardTransitionProfit": {
-                "description": "The amount of losses brought forward from earlier years set off against the tax year's adjusted profit. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "description": "The amount of losses brought forward from earlier years set off against the tax year's amount of transition profit. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
                 "minimum": 0,
                 "maximum": 99999999999.99,
