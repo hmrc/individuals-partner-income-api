@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.models.domain.{Nino, TaxYear}
 import play.api.libs.json.{JsValue, Json}
-import v1.list.model.request.ListPartnerIncomeRequestData
-import v1.list.model.response.{ListPartnerIncomeResponse, PartnerIncomeSubmission}
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.model.response.{ListPartnerIncomeResponse, PartnerIncomeSubmission}
 
 object ListPartnerIncomeFixtures {
 

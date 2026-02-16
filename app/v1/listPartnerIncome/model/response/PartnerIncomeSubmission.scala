@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list.model.response
+package v1.listPartnerIncome.model.response
 
 import play.api.libs.json.*
 import play.api.libs.functional.syntax.*

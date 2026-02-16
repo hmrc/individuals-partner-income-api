@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.controllers.RequestContext
-import api.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
-import v1.list.model.request.ListPartnerIncomeRequestData
-import v1.list.model.response.ListPartnerIncomeResponse
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.model.response.ListPartnerIncomeResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +43,7 @@ class ListPartnerIncomeService @Inject() (connector: ListPartnerIncomeConnector)
     "INVALID_TAX_YEAR"          -> TaxYearFormatError,
     "INVALID_CORRELATION_ID"    -> InternalError,
     "NO_DATA_FOUND"             -> NotFoundError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+    "TAX_YEAR_NOT_SUPPORTED"    -> InternalError
   )
 
 }

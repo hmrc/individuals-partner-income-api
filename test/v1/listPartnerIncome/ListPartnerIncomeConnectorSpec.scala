@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.connectors.ConnectorSpec
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v1.list.ListPartnerIncomeFixtures.*
-import v1.list.model.response.ListPartnerIncomeResponse
+import v1.listPartnerIncome.ListPartnerIncomeFixtures.*
+import v1.listPartnerIncome.model.response.ListPartnerIncomeResponse
 
 import scala.concurrent.Future
 

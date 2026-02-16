@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.models.domain.TaxYear
 import api.models.errors.*
@@ -108,7 +108,7 @@ class ListPartnerIncomeControllerISpec extends IntegrationBaseSpec {
         val errors = List(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError)

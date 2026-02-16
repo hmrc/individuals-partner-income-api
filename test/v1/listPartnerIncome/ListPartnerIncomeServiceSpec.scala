@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.{ServiceOutcome, ServiceSpec}
-import v1.list.ListPartnerIncomeFixtures.*
-import v1.list.model.response.ListPartnerIncomeResponse
+import v1.listPartnerIncome.ListPartnerIncomeFixtures.*
+import v1.listPartnerIncome.model.response.ListPartnerIncomeResponse
 
 import scala.concurrent.Future
 
@@ -54,7 +54,7 @@ class ListPartnerIncomeServiceSpec extends ServiceSpec {
         "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "INVALID_CORRELATION_ID"    -> InternalError,
         "NO_DATA_FOUND"             -> NotFoundError,
-        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+        "TAX_YEAR_NOT_SUPPORTED"    -> InternalError
       )
 
       errors.foreach(serviceError.tupled)

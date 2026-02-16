@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.config.AppConfig
 import api.connectors.DownstreamUri.HipUri
@@ -22,8 +22,8 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v1.list.model.request.ListPartnerIncomeRequestData
-import v1.list.model.response.ListPartnerIncomeResponse
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.model.response.ListPartnerIncomeResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

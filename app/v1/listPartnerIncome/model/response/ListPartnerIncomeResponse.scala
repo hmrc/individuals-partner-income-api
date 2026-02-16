@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome.model.response
 
-import api.controllers.validators.Validator
-import v1.list.model.request.ListPartnerIncomeRequestData
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Singleton
+case class ListPartnerIncomeResponse(partnerIncomeSubmissions: Seq[PartnerIncomeSubmission])
 
-@Singleton
-class ListPartnerIncomeValidatorFactory {
-  def validator(nino: String, taxYear: String): Validator[ListPartnerIncomeRequestData] = new ListPartnerIncomeValidator(nino, taxYear)
+object ListPartnerIncomeResponse {
+  given OFormat[ListPartnerIncomeResponse] = Json.format[ListPartnerIncomeResponse]
 }

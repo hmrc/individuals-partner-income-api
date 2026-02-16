@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package v1.list.model.response
+package v1.listPartnerIncome
 
-import play.api.libs.json.{Json, OFormat}
+import api.utils.UnitSpec
+import v1.listPartnerIncome.ListPartnerIncomeFixtures.*
 
-case class ListPartnerIncomeResponse(partnerIncomeSubmissions: Seq[PartnerIncomeSubmission])
+class ListPartnerIncomeValidatorFactorySpec extends UnitSpec {
 
-object ListPartnerIncomeResponse {
-  given OFormat[ListPartnerIncomeResponse] = Json.format[ListPartnerIncomeResponse]
+  private val validatorFactory = new ListPartnerIncomeValidatorFactory
+
+  "validator()" should {
+    "return the validator for list partner income" in {
+      val result = validatorFactory.validator(nino.nino, taxYear.asMtd)
+      result shouldBe a[ListPartnerIncomeValidator]
+    }
+  }
+
 }

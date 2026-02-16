@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
-import api.connectors.DownstreamOutcome
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.list.model.request.ListPartnerIncomeRequestData
-import v1.list.model.response.ListPartnerIncomeResponse
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.model.response.ListPartnerIncomeResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListPartnerIncomeConnector extends TestSuite with MockFactory {
-  val mockConnector: ListPartnerIncomeConnector = mock[ListPartnerIncomeConnector]
+trait MockListPartnerIncomeService extends TestSuite with MockFactory {
 
-  object MockedListPartnerIncomeConnector {
+  val mockService: ListPartnerIncomeService = mock[ListPartnerIncomeService]
 
-    def listPartnerIncome(request: ListPartnerIncomeRequestData): CallHandler[Future[DownstreamOutcome[ListPartnerIncomeResponse]]] =
-      (mockConnector
-        .listPartnerIncome(_: ListPartnerIncomeRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+  object MockedListPartnerIncomeService {
+
+    def listPartnerIncome(request: ListPartnerIncomeRequestData): CallHandler[Future[ServiceOutcome[ListPartnerIncomeResponse]]] =
+      (mockService
+        .listPartnerIncome(_: ListPartnerIncomeRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(request, *, *)
 
   }
 

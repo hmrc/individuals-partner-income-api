@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package v1.list.model.response
+package v1.listPartnerIncome
 
-import api.utils.UnitSpec
-import play.api.libs.json.{JsValue, Json}
-import v1.list.ListPartnerIncomeFixtures.*
+import api.controllers.validators.{MockValidatorFactory, Validator}
+import org.scalamock.handlers.CallHandler
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
 
-class ListPartnerIncomeResponseSpec extends UnitSpec {
+trait MockListPartnerIncomeValidatorFactory extends MockValidatorFactory[ListPartnerIncomeRequestData] {
+  val mockValidatorFactory: ListPartnerIncomeValidatorFactory = mock[ListPartnerIncomeValidatorFactory]
 
-  "Json Reads" should {
-    "convert Json from downstream into a valid response model" in {
-
-      downstreamJson.as[ListPartnerIncomeResponse] shouldBe responseModel
-    }
-  }
-
-  "Json Writes" should {
-    "convert a ListPartnerIncomeResponse model to json" in {
-
-      Json.toJson(responseModel) shouldBe mtdJson
-    }
-  }
+  def validator(): CallHandler[Validator[ListPartnerIncomeRequestData]] =
+    (mockValidatorFactory.validator(_: String, _: String)).expects(*, *)
 
 }

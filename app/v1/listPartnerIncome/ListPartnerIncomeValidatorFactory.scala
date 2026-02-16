@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
-import api.utils.UnitSpec
-import v1.list.ListPartnerIncomeFixtures.*
+import api.controllers.validators.Validator
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
 
-class ListPartnerIncomeValidatorFactorySpec extends UnitSpec {
+import javax.inject.Singleton
 
-  private val validatorFactory = new ListPartnerIncomeValidatorFactory
-
-  "validator()" should {
-    "return the validator for list partner income" in {
-      val result = validatorFactory.validator(nino.nino, taxYear.asMtd)
-      result shouldBe a[ListPartnerIncomeValidator]
-    }
-  }
-
+@Singleton
+class ListPartnerIncomeValidatorFactory {
+  def validator(nino: String, taxYear: String): Validator[ListPartnerIncomeRequestData] = new ListPartnerIncomeValidator(nino, taxYear)
 }

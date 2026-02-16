@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.models.errors.{
   BadRequestError,
@@ -25,8 +25,8 @@ import api.models.errors.{
   TaxYearFormatError
 }
 import api.utils.UnitSpec
-import v1.list.ListPartnerIncomeFixtures.*
-import v1.list.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.ListPartnerIncomeFixtures.*
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
 
 class ListPartnerIncomeValidatorSpec extends UnitSpec {
 

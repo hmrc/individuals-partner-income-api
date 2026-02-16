@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
@@ -23,7 +23,7 @@ import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveNino
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import jakarta.inject.Inject
-import v1.list.model.request.ListPartnerIncomeRequestData
+import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
 
 class ListPartnerIncomeValidator @Inject() (nino: String, taxYear: String) extends Validator[ListPartnerIncomeRequestData] {
 

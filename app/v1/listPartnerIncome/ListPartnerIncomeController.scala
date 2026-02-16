@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.config.AppConfig
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}

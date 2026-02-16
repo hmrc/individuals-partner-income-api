@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list.model.request
+package v1.listPartnerIncome.model.request
 
 import api.models.domain.{Nino, TaxYear}
 

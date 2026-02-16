@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.list
+package v1.listPartnerIncome
 
 import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -24,7 +24,7 @@ import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.utils.MockIdGenerator
 import play.api.Configuration
 import play.api.mvc.Result
-import v1.list.ListPartnerIncomeFixtures.*
+import v1.listPartnerIncome.ListPartnerIncomeFixtures.*
 
 import scala.concurrent.{ExecutionContext, Future}
 
