@@ -39,7 +39,7 @@ class RetrievePartnerIncomeController @Inject() (
   override val endpointName: String = "retrieve-partner-income"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrievePartnerIncomeController", endpointName = "Retrieve Partner Income")
+    EndpointLogContext(controllerName = "RetrievePartnerIncomeController", endpointName = "retrievePartnerIncome")
 
   def retrievePartnerIncome(nino: String, taxYear: String, partnershipUtr: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

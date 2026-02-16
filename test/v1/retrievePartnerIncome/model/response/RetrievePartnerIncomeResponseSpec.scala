@@ -45,11 +45,11 @@ class RetrievePartnerIncomeResponseSpec extends UnitSpec {
   }
 
   "Json Writes" should {
-    "convert a ListPartnerIncomeResponse model to json" in {
+    "convert a RetrievePartnerIncomeResponse model to json" in {
       Json.toJson(responseModel) shouldBe mtdJson
     }
 
-    "convert a ListPartnerIncomeResponse model to json when some optional fields are missing" in {
+    "convert a RetrievePartnerIncomeResponse model to json when some optional fields are missing" in {
       Json.toJson(responseModelWithMissingFields) shouldBe mtdJsonWithMissingFields
     }
   }

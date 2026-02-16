@@ -79,6 +79,13 @@ class DeletePartnerIncomeValidatorFactorySpec extends UnitSpec with JsonErrorVal
       }
     }
 
+    "return multiple errors" when {
+      "given multiple invalid request parameters" in {
+        val result = validatorFactory.validator("invalid-nino", "invalid-tax-year", "abc").validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, PartnershipUtrFormatError, TaxYearFormatError))))
+      }
+    }
+
   }
 
 }
