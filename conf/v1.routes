@@ -1,2 +1,3 @@
 GET           /:nino/:taxYear/partnership                        v1.listPartnerIncome.ListPartnerIncomeController.listPartnerIncome(nino: String, taxYear: String)
+GET           /:nino/:taxYear/partnership/:partnershipUtr        v1.retrievePartnerIncome.RetrievePartnerIncomeController.retrievePartnerIncome(nino: String, taxYear: String, partnershipUtr: String)
 DELETE        /:nino/:taxYear/partnership/:partnershipUtr        v1.deletePartnerIncome.DeletePartnerIncomeController.deletePartnerIncome(nino: String, taxYear: String, partnershipUtr: String)

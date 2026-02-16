@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package v1.deletePartnerIncome
+package v1.retrievePartnerIncome
 
 import api.config.AppConfig
 import api.controllers.*
-import api.routing.Version
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 
@@ -27,26 +26,22 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeletePartnerIncomeController @Inject() (
+class RetrievePartnerIncomeController @Inject() (
     val authService: EnrolmentsAuthService,
     val lookupService: MtdIdLookupService,
-    service: DeletePartnerIncomeService,
-    validatorFactory: DeletePartnerIncomeValidatorFactory,
-    auditService: AuditService,
+    service: RetrievePartnerIncomeService,
+    validatorFactory: RetrievePartnerIncomeValidatorFactory,
     cc: ControllerComponents,
     idGenerator: IdGenerator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  override val endpointName = "delete-partner-income"
+  override val endpointName: String = "retrieve-partner-income"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(
-      controllerName = "DeletePartnerIncomeController",
-      endpointName = "deletePartnerIncome"
-    )
+    EndpointLogContext(controllerName = "RetrievePartnerIncomeController", endpointName = "retrievePartnerIncome")
 
-  def deletePartnerIncome(nino: String, taxYear: String, partnershipUtr: String): Action[AnyContent] =
+  def retrievePartnerIncome(nino: String, taxYear: String, partnershipUtr: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -54,15 +49,8 @@ class DeletePartnerIncomeController @Inject() (
 
       val requestHandler = RequestHandler
         .withValidator(validator)
-        .withService(service.deletePartnerIncome)
-        .withNoContentResult()
-        .withAuditing(AuditHandler(
-          auditService,
-          auditType = "DeletePartnerIncome",
-          apiVersion = Version(request),
-          transactionName = "delete-partner-income",
-          params = Map("nino" -> nino, "taxYear" -> taxYear, "partnershipUtr" -> partnershipUtr)
-        ))
+        .withService(service.retrievePartnerIncome)
+        .withPlainJsonResult(OK)
 
       requestHandler.handleRequest()
     }

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package v1.deletePartnerIncome
+package v1.retrievePartnerIncome
 
 import api.models.domain.{Nino, PartnershipUtr, TaxYear}
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
-import v1.deletePartnerIncome.model.request.DeletePartnerIncomeRequestData
+import v1.retrievePartnerIncome.model.request.RetrievePartnerIncomeRequestData
 
-class DeletePartnerIncomeValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
+class RetrievePartnerIncomeValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
   private val validNino           = "AA123456A"
   private val validPartnershipUtr = "1234567890"
   private val validTaxYear        = "2026-27"
 
   private implicit val correlationId: String = "1234"
-  private val validatorFactory               = new DeletePartnerIncomeValidatorFactory
+  private val validatorFactory               = new RetrievePartnerIncomeValidatorFactory
 
   private val parsedNino           = Nino(validNino)
   private val parsedPartnershipUtr = PartnershipUtr(validPartnershipUtr)
@@ -39,7 +39,7 @@ class DeletePartnerIncomeValidatorFactorySpec extends UnitSpec with JsonErrorVal
     "return the parsed domain object" when {
       "given a valid request" in {
         val result = validatorFactory.validator(validNino, validTaxYear, validPartnershipUtr).validateAndWrapResult()
-        result shouldBe Right(DeletePartnerIncomeRequestData(parsedNino, parsedTaxYear, parsedPartnershipUtr))
+        result shouldBe Right(RetrievePartnerIncomeRequestData(parsedNino, parsedTaxYear, parsedPartnershipUtr))
       }
     }
 
