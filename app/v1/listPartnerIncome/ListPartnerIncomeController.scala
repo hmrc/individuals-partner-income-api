@@ -39,7 +39,7 @@ class ListPartnerIncomeController @Inject() (val authService: EnrolmentsAuthServ
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "ListPartnerIncomeController",
-      endpointName = "ListPartnerIncome"
+      endpointName = "listPartnerIncome"
     )
 
   def listPartnerIncome(nino: String, taxYear: String): Action[AnyContent] = {

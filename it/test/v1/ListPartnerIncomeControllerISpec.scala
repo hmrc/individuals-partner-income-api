@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.listPartnerIncome
+package v1
 
 import api.models.domain.TaxYear
 import api.models.errors.*
@@ -24,9 +24,10 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.libs.json.Json
-import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.libs.ws.DefaultBodyReadables.readableAsString
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import v1.listPartnerIncome.ListPartnerIncomeFixtures
 
 class ListPartnerIncomeControllerISpec extends IntegrationBaseSpec {
 
@@ -110,7 +111,7 @@ class ListPartnerIncomeControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-          (NOT_FOUND, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError),
+          (BAD_REQUEST, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError)
         )
 
