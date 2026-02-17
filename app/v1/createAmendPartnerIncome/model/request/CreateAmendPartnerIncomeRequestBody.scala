@@ -25,7 +25,7 @@ case class CreateAmendPartnerIncomeRequestBody(
     startDate: Option[String],
     endDate: Option[String],
     cashBasis: Option[Boolean],
-    partnerShipTrades: Option[Seq[PartnerShipTrade]],
+    partnershipTrades: Option[Seq[PartnerShipTrade]],
     nationalInsuranceContributions: Option[NationalInsuranceContributions],
     untaxedSavingsIncome: Option[UntaxedSavingsIncome],
     ukPropertyIncome: Option[UkPropertyIncome],
