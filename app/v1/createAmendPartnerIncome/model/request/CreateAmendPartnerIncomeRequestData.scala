@@ -16,4 +16,6 @@
 
 package v1.createAmendPartnerIncome.model.request
 
-case class CreateAmendPartnerIncomeRequestData(nino: String, taxYear: String, body: CreateAmendPartnerIncomeRequestBody)
+import api.models.domain.{Nino, TaxYear}
+
+case class CreateAmendPartnerIncomeRequestData(nino: Nino, taxYear: TaxYear, body: CreateAmendPartnerIncomeRequestBody)
