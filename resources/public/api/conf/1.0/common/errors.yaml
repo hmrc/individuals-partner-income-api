@@ -52,34 +52,34 @@ components:
         message: The provided trade description is invalid
 
     ruleStartDate:
-      description: An empty or non-matching body was submitted.
+      description: The start date must fall within the tax year provided.
       value:
         code: RULE_START_DATE
-        message: An empty or non-matching body was submitted
+        message: The start date does not fall within the tax year provided
 
     ruleEndDate:
-      description: An empty or non-matching body was submitted.
+      description: The end date must fall within the tax year provided.
       value:
         code: RULE_END_DATE
-        message: An empty or non-matching body was submitted
+        message: The end date does not fall within the tax year provided
 
     ruleEndDateBeforeStartDate:
-      description: An empty or non-matching body was submitted.
+      description: The end date is before the start date.
       value:
         code: RULE_END_DATE_BEFORE_START_DATE
-        message: An empty or non-matching body was submitted
+        message: The end date must be within the tax year
 
     ruleDuplicateTradeDescription:
-      description: An empty or non-matching body was submitted.
+      description: A duplicate trade description has been provided for the partnership. Trade descriptions must be unique (case-insensitive).
       value:
         code: RULE_DUPLICATE_TRADE_DESCRIPTION
-        message: An empty or non-matching body was submitted
+        message: The trade description already exists for this partnership
 
     ruleMissingPartnershipTradesDetails:
-      description: An empty or non-matching body was submitted.
+      description: At least one of tradingOrProfessionalProfits or tradingOrProfessionalLosses must be provided.
       value:
         code: RULE_MISSING_PARTNERSHIP_TRADES_DETAILS
-        message: An empty or non-matching body was submitted
+        message: At least one of tradingOrProfessionalProfits or tradingOrProfessionalLosses must be provided
 
     ruleIncorrectOrEmptyBody:
       description: An empty or non-matching body was submitted.
