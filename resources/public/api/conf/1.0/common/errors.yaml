@@ -67,7 +67,7 @@ components:
       description: The end date is before the start date.
       value:
         code: RULE_END_DATE_BEFORE_START_DATE
-        message: The end date must be within the tax year
+        message: The end date is before the start date
 
     ruleDuplicateTradeDescription:
       description: A duplicate trade description has been provided for the partnership. Trade descriptions must be unique (case-insensitive).
