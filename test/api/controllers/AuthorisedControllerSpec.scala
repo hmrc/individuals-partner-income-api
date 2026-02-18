@@ -16,13 +16,14 @@
 
 package api.controllers
 
-import play.api.Configuration
-import play.api.libs.json.JsObject
-import play.api.mvc.{Action, AnyContent, Result}
 import api.config.MockAppConfig
 import api.models.auth.UserDetails
 import api.models.errors.*
 import api.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
+import play.api.Configuration
+import play.api.http.Status.UNAUTHORIZED
+import play.api.libs.json.JsObject
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
@@ -88,6 +89,16 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
         status(result) shouldBe FORBIDDEN
+      }
+      "return a 401" in new Test {
+        MockedMtdIdLookupService.lookup(nino) returns Future.successful(Right(mtdId))
+
+        MockedEnrolmentsAuthService
+          .authoriseAgent(mtdId, supportingAgentAccessAllowed = true)
+          .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError.withStatus401)))
+
+        val result: Future[Result] = controller.action(nino)(fakeGetRequest)
+        status(result) shouldBe UNAUTHORIZED
       }
     }
 
