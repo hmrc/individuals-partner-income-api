@@ -16,20 +16,16 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.PartnershipUtr
-import api.models.errors.{MtdError, PartnershipUtrFormatError}
+import api.models.domain.PartnershipName
+import api.models.errors.{MtdError, PartnershipNameFormatError}
 import cats.data.Validated
 
-case class ResolvePartnershipUtr(formatError: MtdError) extends ResolverSupport {
+object ResolvePartnershipName extends ResolverSupport {
 
-  private val partnershipUtrRegex = "^[0-9]{10}$".r
+  private val partnershipNameRegex = "^.{1,105}$".r
 
-  val resolver: Resolver[String, PartnershipUtr] =
-    ResolveStringPattern(partnershipUtrRegex, formatError).resolver.map(PartnershipUtr.apply)
-  
-}
+  val resolver: Resolver[String, PartnershipName] =
+    ResolveStringPattern(partnershipNameRegex, PartnershipNameFormatError.withPath("/partnershipName")).resolver.map(PartnershipName.apply)
 
-object ResolvePartnershipUtr extends ResolverSupport {
-  def apply(value: String, formatError: MtdError = PartnershipUtrFormatError): Validated[Seq[MtdError], PartnershipUtr] = 
-    ResolvePartnershipUtr(formatError).resolver(value)
+  def apply(value: String): Validated[Seq[MtdError], PartnershipName] = resolver(value)
 }
