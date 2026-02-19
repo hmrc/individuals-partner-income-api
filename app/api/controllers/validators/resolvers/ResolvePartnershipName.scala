@@ -25,7 +25,7 @@ object ResolvePartnershipName extends ResolverSupport {
   private val partnershipNameRegex = "^.{1,105}$".r
 
   val resolver: Resolver[String, PartnershipName] =
-    ResolveStringPattern(partnershipNameRegex, PartnershipNameFormatError).resolver.map(PartnershipName.apply)
+    ResolveStringPattern(partnershipNameRegex, PartnershipNameFormatError.withPath("/partnershipName")).resolver.map(PartnershipName.apply)
 
   def apply(value: String): Validated[Seq[MtdError], PartnershipName] = resolver(value)
 }

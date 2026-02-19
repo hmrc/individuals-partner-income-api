@@ -53,7 +53,7 @@ object RuleStartDateError extends MtdError("RULE_START_DATE", "The start date do
 
 object RuleEndDateError extends MtdError("RULE_END_DATE", "The end date does not fall within the tax year provided", BAD_REQUEST)
 
-object RuleEndBeforeStartDateError extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The end date must be within the tax year", BAD_REQUEST)
+object RuleEndBeforeStartDateError extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "\tThe end date is before the start date", BAD_REQUEST)
 
 object RuleDuplicateTradeDescriptionError
     extends MtdError("RULE_DUPLICATE_TRADE_DESCRIPTION", "The trade description already exists for this partnership", BAD_REQUEST)

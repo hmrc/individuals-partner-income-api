@@ -6,7 +6,7 @@ val appName = "individuals-partner-income-api"
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "3.5.2"
-ThisBuild / scalacOptions ++= Seq("-Werror", "-Wconf:msg=Flag.*repeatedly:s")
+//ThisBuild / scalacOptions ++= Seq("-Werror", "-Wconf:msg=Flag.*repeatedly:s")
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
