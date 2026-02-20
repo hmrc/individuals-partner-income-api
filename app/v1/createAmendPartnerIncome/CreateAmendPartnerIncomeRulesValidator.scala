@@ -17,12 +17,14 @@
 package v1.createAmendPartnerIncome
 
 import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.{ResolveDateRange, ResolvePartnershipName, ResolvePartnershipUtr}
+import api.controllers.validators.resolvers.{ResolveDateRange, ResolvePartnershipUtr, ResolveStringPattern}
 import api.models.domain.TaxYear
 import api.models.errors.*
 import cats.data.Validated
-import v1.createAmendPartnerIncome.model.request.CreateAmendPartnerIncomeRequestData
+import cats.implicits.toTraverseOps
+import v1.createAmendPartnerIncome.model.request.{CreateAmendPartnerIncomeRequestData, PartnerShipTrade}
 import java.time.LocalDate
+
 object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmendPartnerIncomeRequestData] {
 
   def validateBusinessRules(parsed: CreateAmendPartnerIncomeRequestData): Validated[Seq[MtdError], CreateAmendPartnerIncomeRequestData] = {
@@ -32,10 +34,16 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
     combine(
       ResolvePartnershipUtr(partnershipUtr, PartnershipUtrFormatError.withPath("/partnershipUtr")),
-      ResolvePartnershipName(partnershipName),
-      validateStartEndDate(startDate, endDate, taxYear)
+      validatePartnershipName(partnershipName),
+      validateStartEndDate(startDate, endDate, taxYear),
+      validateTradeDescription(partnershipTrades)
     ).onSuccess(parsed)
   }
+
+  private val partnershipNameRegex = "^.{1,105}$".r
+
+  def validatePartnershipName(name: String): Validated[Seq[MtdError], String] =
+    ResolveStringPattern(partnershipNameRegex, PartnershipNameFormatError.withPath("/partnershipName"))(name)
 
   def validateStartEndDate(startDate: Option[String], endDate: Option[String], taxYear: TaxYear): Validated[Seq[MtdError], Unit] = {
     val startDatePath = "/startDate"
@@ -48,15 +56,29 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
       )(startDate, endDate)
 
     def isWithinTaxYear(date: LocalDate): Boolean = TaxYear.containing(date) == taxYear
-    resolveDateRange.andThen {
-      (start, end) =>
+    resolveDateRange.andThen { (start, end) =>
 
-        val validateStart: Validated[Seq[MtdError], Unit] = Validated.cond(start.forall(isWithinTaxYear), (), Seq(RuleStartDateError.withPath("/startDate")))
-        val validateEnd: Validated[Seq[MtdError], Unit] = Validated.cond(end.forall(isWithinTaxYear), (), Seq(RuleEndDateError.withPath("/endDate")))
-        combine(validateStart, validateEnd)
+      val validateStart: Validated[Seq[MtdError], Unit] =
+        Validated.cond(start.forall(isWithinTaxYear), (), Seq(RuleStartDateError.withPath(startDatePath)))
+      val validateEnd: Validated[Seq[MtdError], Unit] = Validated.cond(end.forall(isWithinTaxYear), (), Seq(RuleEndDateError.withPath(endDatePath)))
+      combine(validateStart, validateEnd)
     }
 
+  }
+
+  private def validateTradeDescription(partnershipTrades: Option[Seq[PartnerShipTrade]]) = {
+    val tradeDescriptionRegex = "^.{1,30}$".r
+    partnershipTrades
+      .getOrElse(Seq.empty)
+      .zipWithIndex
+      .traverse { case (partnerShipTrade, index) =>
+        val path = s"/partnershipTrades/$index/tradeDescription"
+
+        ResolveStringPattern(tradeDescriptionRegex, TradeDescriptionFormatError.withPath(path))(partnerShipTrade.tradeDescription)
+      }
 
   }
+
+
 
 }

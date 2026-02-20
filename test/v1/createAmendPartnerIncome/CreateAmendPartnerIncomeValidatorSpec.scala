@@ -19,7 +19,7 @@ package v1.createAmendPartnerIncome
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import v1.createAmendPartnerIncome.CreateAmendPartnerIncomeFixtures.*
 import v1.createAmendPartnerIncome.model.request.CreateAmendPartnerIncomeRequestData
 
@@ -77,43 +77,83 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "passed a body containing an invalid partnershipName" in {
-        val json = fullMtdJson.update("/partnershipName", JsString("x" * 107))
+        val json   = fullMtdJson.update("/partnershipName", JsString("x" * 107))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, PartnershipNameFormatError.withPath("/partnershipName")))
       }
 
       "passed a body containing an invalid startDate" in {
-        val json = fullMtdJson.update("/startDate", JsString("invalid"))
+        val json   = fullMtdJson.update("/startDate", JsString("invalid"))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, StartDateFormatError.withPath("/startDate")))
       }
 
       "passed a body containing an invalid endDate" in {
-        val json = fullMtdJson.update("/endDate", JsString("invalid"))
+        val json   = fullMtdJson.update("/endDate", JsString("invalid"))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, EndDateFormatError.withPath("/endDate")))
       }
 
       "passed a body containing a start date that is after the end date" in {
-        val json = fullMtdJson.update("/startDate", JsString("2026-07-25"))
+        val json   = fullMtdJson.update("/startDate", JsString("2026-07-25"))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleEndBeforeStartDateError))
       }
 
       "passed a body containing a start date that is falls outside the taxYear" in {
-        val json = fullMtdJson.removeProperty("/endDate").update("/startDate", JsString("2027-07-25"))
-        println(json)
+        val json   = fullMtdJson.removeProperty("/endDate").update("/startDate", JsString("2027-07-25"))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleStartDateError.withPath("/startDate")))
       }
 
       "passed a body containing an end date that falls outside the taxYear" in {
-        val json = fullMtdJson.update("/endDate", JsString("2027-07-25"))
+        val json   = fullMtdJson.update("/endDate", JsString("2027-07-25"))
         val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleEndDateError.withPath("/endDate")))
       }
 
+      "passed a body containing an invalid trade description" in {
+        val replacement = Json.parse(s"""
+             |[
+             |   {
+             |      "tradeDescription": "${"x" * 32}",
+             |      "tradingOrProfessionalProfits": {
+             |        "shareOfProfitOrLoss": 5000.99,
+             |        "shareOfTaxableProfit": 5000.99
+             |     }
+             |   }
+             | ]
+             |""".stripMargin)
+        val json = fullMtdJson.update("partnershipTrades", replacement)
+        println(json)
+        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, TradeDescriptionFormatError.withPath("/partnershipTrades/0/tradeDescription")))
+      }
 
+      "passed a body containing duplicate trade descriptions" in {
+        val replacement = Json.parse(s"""
+             |[
+             |  {
+             |    "tradeDescription": "Consultancy Services",
+             |    "tradingOrProfessionalProfits": {
+             |      "shareOfProfitOrLoss": 5000.99,
+             |      "shareOfTaxableProfit": 5000.99
+             |    }
+             |  },
+             |  {
+             |    "tradeDescription": "Consultancy Services",
+             |    "tradingOrProfessionalProfits": {
+             |      "shareOfProfitOrLoss": 5000.99,
+             |      "shareOfTaxableProfit": 5000.99
+             |    }
+             |  }
+             |]
+             |""".stripMargin)
+        val json = fullMtdJson.update("partnershipTrades", replacement)
+        println(json)
+        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, RuleDuplicateTradeDescriptionError.withPath("/partnershipTrades/1/tradeDescription")))
+      }
 
     }
 
