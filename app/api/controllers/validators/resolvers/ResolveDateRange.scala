@@ -37,17 +37,17 @@ case class ResolveDateRange(startDateFormatError: MtdError = StartDateFormatErro
     ).mapN(resolveDateRange).andThen(identity)
   }
 
-  val optionalResolver: Resolver[(Option[String], Option[String]), (Option[LocalDate], Option[LocalDate])] = {
-    case (startDate, endDate) =>
-      (
-        ResolveIsoDate(startDate, startDateFormatError),
-        ResolveIsoDate(endDate, endDateFormatError)
-      ).mapN(resolveDateRangeOptionally).andThen(identity)
+  val optionalResolver: Resolver[(Option[String], Option[String]), (Option[LocalDate], Option[LocalDate])] = { case (startDate, endDate) =>
+    (
+      ResolveIsoDate(startDate, startDateFormatError),
+      ResolveIsoDate(endDate, endDateFormatError)
+    ).mapN(resolveDateRangeOptionally).andThen(identity)
   }
 
   def apply(value: (String, String)): Validated[Seq[MtdError], DateRange] = resolver(value)
 
-  def apply(start: Option[String], end: Option[String]): Validated[Seq[MtdError], (Option[LocalDate], Option[LocalDate])] = optionalResolver(start, end)
+  def apply(start: Option[String], end: Option[String]): Validated[Seq[MtdError], (Option[LocalDate], Option[LocalDate])] =
+    optionalResolver(start, end)
 
   def withDatesLimitedTo(minDate: LocalDate, maxDate: LocalDate): Resolver[(String, String), DateRange] =
     resolver.thenValidate(datesLimitedTo(minDate, startDateFormatError, maxDate, endDateFormatError))
@@ -61,12 +61,14 @@ case class ResolveDateRange(startDateFormatError: MtdError = StartDateFormatErro
     else
       Valid(DateRange(parsedStartDate, parsedEndDate))
 
-  private def resolveDateRangeOptionally(parsedStartDate: Option[LocalDate], parsedEndDate: Option[LocalDate]): Validated[Seq[MtdError], (Option[LocalDate], Option[LocalDate])] = {
+  private def resolveDateRangeOptionally(parsedStartDate: Option[LocalDate],
+                                         parsedEndDate: Option[LocalDate]): Validated[Seq[MtdError], (Option[LocalDate], Option[LocalDate])] = {
     (parsedStartDate, parsedEndDate) match {
       case (Some(start), Some(end)) if end < start => Invalid(List(endBeforeStartDateError))
-      case _ => Valid(parsedStartDate, parsedEndDate)
+      case _                                       => Valid(parsedStartDate, parsedEndDate)
     }
   }
+
 }
 
 object ResolveDateRange extends ResolverSupport {

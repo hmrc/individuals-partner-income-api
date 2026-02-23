@@ -24,7 +24,7 @@ case class TradingOrProfessionalProfits(
     accountingAdjustment: Option[BigDecimal],
     averagingAdjustment: Option[BigDecimal],
     foreignTaxClaimedDeduction: Option[BigDecimal],
-    adjustedProfit: Option[BigDecimal],
+    adjustedProfit: BigDecimal,
     transitionProfitArisingThisYear: Option[BigDecimal],
     lossesBroughtForwardTransitionProfit: Option[BigDecimal],
     lossesBroughtForwardAdjustedProfit: Option[BigDecimal],

@@ -58,7 +58,7 @@ class PartnerShipTradeSpec extends UnitSpec {
         accountingAdjustment = Some(5000.99),
         averagingAdjustment = Some(5000.99),
         foreignTaxClaimedDeduction = Some(5000.99),
-        adjustedProfit = Some(5000.99),
+        adjustedProfit = 5000.99,
         transitionProfitArisingThisYear = Some(5000.99),
         lossesBroughtForwardTransitionProfit = Some(5000.99),
         lossesBroughtForwardAdjustedProfit = Some(5000.99),

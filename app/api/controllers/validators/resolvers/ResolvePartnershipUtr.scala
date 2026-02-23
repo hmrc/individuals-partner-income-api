@@ -26,10 +26,12 @@ case class ResolvePartnershipUtr(formatError: MtdError) extends ResolverSupport 
 
   val resolver: Resolver[String, PartnershipUtr] =
     ResolveStringPattern(partnershipUtrRegex, formatError).resolver.map(PartnershipUtr.apply)
-  
+
 }
 
 object ResolvePartnershipUtr extends ResolverSupport {
-  def apply(value: String, formatError: MtdError = PartnershipUtrFormatError): Validated[Seq[MtdError], PartnershipUtr] = 
+
+  def apply(value: String, formatError: MtdError = PartnershipUtrFormatError): Validated[Seq[MtdError], PartnershipUtr] =
     ResolvePartnershipUtr(formatError).resolver(value)
+
 }
