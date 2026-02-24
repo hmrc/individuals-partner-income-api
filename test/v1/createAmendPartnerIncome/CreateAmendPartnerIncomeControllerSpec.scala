@@ -51,14 +51,14 @@ class CreateAmendPartnerIncomeControllerSpec
           .createAmendPartnerIncome(request)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        runOkTest(NO_CONTENT)
+        runOkTestWithAudit(NO_CONTENT, maybeAuditRequestBody = Some(fullMtdJson))
       }
     }
 
     "the parser validation fails" should {
       "return the error per spec" in new Test {
         willUseValidator(returning(NinoFormatError))
-        runErrorTest(NinoFormatError)
+        runErrorTestWithAudit(NinoFormatError, Some(fullMtdJson))
       }
     }
 
@@ -68,7 +68,7 @@ class CreateAmendPartnerIncomeControllerSpec
         MockedCreateAmendPartnerIncomeService
           .createAmendPartnerIncome(request)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, TaxYearFormatError))))
-        runErrorTest(TaxYearFormatError)
+        runErrorTestWithAudit(TaxYearFormatError, Some(fullMtdJson))
       }
     }
   }
@@ -99,7 +99,7 @@ class CreateAmendPartnerIncomeControllerSpec
         auditType = "CreateAmendPartnerIncome",
         transactionName = "create-amend-partner-income",
         detail = GenericAuditDetail(
-          versionNumber = "1.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "taxYear" -> taxYear.asMtd),

@@ -23,7 +23,7 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.syntax.all.*
-import v1.createAmendPartnerIncome.model.request.{CreateAmendPartnerIncomeRequestBody, CreateAmendPartnerIncomeRequestData, PartnerShipTrade}
+import v1.createAmendPartnerIncome.model.request.{CreateAmendPartnerIncomeRequestBody, CreateAmendPartnerIncomeRequestData, PartnershipTrade}
 import java.time.LocalDate
 
 object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmendPartnerIncomeRequestData] {
@@ -69,7 +69,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
   }
 
-  private def validateTradeDescription(partnershipTrades: Seq[(PartnerShipTrade, Int)]): Validated[Seq[MtdError], Unit] = {
+  private def validateTradeDescription(partnershipTrades: Seq[(PartnershipTrade, Int)]): Validated[Seq[MtdError], Unit] = {
     val tradeDescriptionRegex = "^.{1,30}$".r
     val indexedDescriptions = partnershipTrades
       .map(pt => (pt._1.tradeDescription, pt._2))
@@ -79,7 +79,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
         ResolveStringPattern(tradeDescriptionRegex, TradeDescriptionFormatError.withPath(s"/partnershipTrades/$index/tradeDescription"))(
           tradeDescription)
       }
-      .andThen { tradeDescriptions =>
+      .andThen { _ =>
         val duplicates = indexedDescriptions
           .groupBy(_._1)
           .collect {
@@ -99,10 +99,10 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
   }
 
-  private def validatePartnershipTradeDetails(partnershipTrades: Seq[(PartnerShipTrade, Int)]): Validated[Seq[MtdError], Unit] = {
+  private def validatePartnershipTradeDetails(partnershipTrades: Seq[(PartnershipTrade, Int)]): Validated[Seq[MtdError], Unit] = {
     partnershipTrades
-      .map { case (partnerShipTrade, idx) =>
-        if (partnerShipTrade.tradingOrProfessionalLosses.isEmpty && partnerShipTrade.tradingOrProfessionalProfits.isEmpty) {
+      .map { case (partnershipTrade, idx) =>
+        if (partnershipTrade.tradingOrProfessionalLosses.isEmpty && partnershipTrade.tradingOrProfessionalProfits.isEmpty) {
           Invalid(List(RuleMissingPartnershipTradesDetailsError.withPath(s"/partnershipTrades/$idx")))
         } else {
           valid
@@ -112,7 +112,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
       .andThen(_ => valid)
   }
 
-  private def validatePartnershipTradeNumericValues(partnershipTrades: Seq[(PartnerShipTrade, Int)]): Validated[Seq[MtdError], Seq[Unit]] = {
+  private def validatePartnershipTradeNumericValues(partnershipTrades: Seq[(PartnershipTrade, Int)]): Validated[Seq[MtdError], Seq[Unit]] = {
     partnershipTrades
       .traverse { case (partnerShipTrade, idx) =>
         import partnerShipTrade.*
@@ -170,7 +170,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
   }
 
-  def validatePartnershipTrades(partnershipTrades: Option[Seq[PartnerShipTrade]]): Validated[Seq[MtdError], Unit] = {
+  def validatePartnershipTrades(partnershipTrades: Option[Seq[PartnershipTrade]]): Validated[Seq[MtdError], Unit] = {
     val indexed = partnershipTrades
       .getOrElse(Seq.empty)
       .zipWithIndex

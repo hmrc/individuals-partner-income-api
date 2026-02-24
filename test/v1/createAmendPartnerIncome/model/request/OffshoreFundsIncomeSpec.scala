@@ -19,7 +19,7 @@ package v1.createAmendPartnerIncome.model.request
 import api.utils.UnitSpec
 import play.api.libs.json.Json
 
-class OffShoreFundsIncomeSpec extends UnitSpec {
+class OffshoreFundsIncomeSpec extends UnitSpec {
 
   private val mtdJson = Json.parse(
     """

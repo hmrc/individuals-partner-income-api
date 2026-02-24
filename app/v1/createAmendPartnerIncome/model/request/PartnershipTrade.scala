@@ -18,12 +18,12 @@ package v1.createAmendPartnerIncome.model.request
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PartnerShipTrade(
+case class PartnershipTrade(
     tradeDescription: String,
     tradingOrProfessionalProfits: Option[TradingOrProfessionalProfits],
     tradingOrProfessionalLosses: Option[TradingOrProfessionalLosses]
 )
 
-object PartnerShipTrade {
-  given OFormat[PartnerShipTrade] = Json.format[PartnerShipTrade]
+object PartnershipTrade {
+  given OFormat[PartnershipTrade] = Json.format[PartnershipTrade]
 }

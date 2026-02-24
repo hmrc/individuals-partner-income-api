@@ -25,7 +25,7 @@ case class CreateAmendPartnerIncomeRequestBody(
     startDate: Option[String],
     endDate: Option[String],
     cashBasis: Option[Boolean],
-    partnershipTrades: Option[Seq[PartnerShipTrade]],
+    partnershipTrades: Option[Seq[PartnershipTrade]],
     nationalInsuranceContributions: Option[NationalInsuranceContributions],
     untaxedSavingsIncome: Option[UntaxedSavingsIncome],
     ukPropertyIncome: Option[UkPropertyIncome],
@@ -47,7 +47,7 @@ object CreateAmendPartnerIncomeRequestBody {
       (JsPath \ "startDate").writeNullable[String] and
       (JsPath \ "endDate").writeNullable[String] and
       (JsPath \ "cashBasis").writeNullable[Boolean] and
-      (JsPath \ "partnershipTrades").writeNullable[Seq[PartnerShipTrade]] and
+      (JsPath \ "partnershipTrades").writeNullable[Seq[PartnershipTrade]] and
       (JsPath \ "nationalInsuranceContributions").writeNullable[NationalInsuranceContributions] and
       (JsPath \ "untaxedSavingsIncome").writeNullable[UntaxedSavingsIncome] and
       (JsPath \ "ukPropertyIncome").writeNullable[UkPropertyIncome] and

@@ -25,13 +25,14 @@ import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.JsValue
 import v1.createAmendPartnerIncome.model.request.{CreateAmendPartnerIncomeRequestBody, CreateAmendPartnerIncomeRequestData}
 import v1.createAmendPartnerIncome.CreateAmendPartnerIncomeRulesValidator.validateBusinessRules
+import v1.minimumTaxYear
 
 import javax.inject.Inject
 
 class CreateAmendPartnerIncomeValidator @Inject() (nino: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendPartnerIncomeRequestData] {
 
-  private val resolvedTaxYear = ResolveDetailedTaxYear(TaxYear.ending(2027))
+  private val resolvedTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
   private val resolvedJson    = ResolveNonEmptyJsonObject[CreateAmendPartnerIncomeRequestBody]()
 
   def validate: Validated[Seq[MtdError], CreateAmendPartnerIncomeRequestData] =

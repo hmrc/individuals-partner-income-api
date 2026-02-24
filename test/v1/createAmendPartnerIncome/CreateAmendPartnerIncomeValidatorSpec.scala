@@ -72,44 +72,50 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
 
       "passed a body containing an invalid partnershipUtr" in {
         val json   = fullMtdJson.update("/partnershipUtr", JsString("invalid"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, PartnershipUtrFormatError.withPath("/partnershipUtr")))
       }
 
       "passed a body containing an invalid partnershipName" in {
         val json   = fullMtdJson.update("/partnershipName", JsString("x" * 107))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, PartnershipNameFormatError.withPath("/partnershipName")))
       }
 
       "passed a body containing an invalid startDate" in {
         val json   = fullMtdJson.update("/startDate", JsString("invalid"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, StartDateFormatError.withPath("/startDate")))
       }
 
       "passed a body containing an invalid endDate" in {
         val json   = fullMtdJson.update("/endDate", JsString("invalid"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, EndDateFormatError.withPath("/endDate")))
       }
 
       "passed a body containing a start date that is after the end date" in {
         val json   = fullMtdJson.update("/startDate", JsString("2026-07-25"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleEndBeforeStartDateError))
       }
 
-      "passed a body containing a start date that is falls outside the taxYear" in {
+      "passed a body containing a start date that falls outside the taxYear" in {
         val json   = fullMtdJson.removeProperty("/endDate").update("/startDate", JsString("2027-07-25"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleStartDateError.withPath("/startDate")))
       }
 
       "passed a body containing an end date that falls outside the taxYear" in {
         val json   = fullMtdJson.update("/endDate", JsString("2027-07-25"))
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleEndDateError.withPath("/endDate")))
+      }
+
+      "passed a body that is missing mandatory fields" in {
+        val json   = fullMtdJson.removeProperty("/partnershipName").removeProperty("/partnershipUtr")
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPaths(Seq("/partnershipName", "/partnershipUtr"))))
       }
 
       "passed a body containing an invalid trade description" in {
@@ -126,7 +132,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
              | ]
              |""".stripMargin)
         val json   = fullMtdJson.update("partnershipTrades", replacement)
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, TradeDescriptionFormatError.withPath("/partnershipTrades/0/tradeDescription")))
       }
 
@@ -152,7 +158,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
              | ]
              |""".stripMargin)
         val json   = fullMtdJson.update("partnershipTrades", replacement)
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
@@ -181,7 +187,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
              |]
              |""".stripMargin)
         val json   = fullMtdJson.update("partnershipTrades", replacement)
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
@@ -197,14 +203,14 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
              |]
              |""".stripMargin)
         val json   = fullMtdJson.update("partnershipTrades", replacement)
-        val result = validator(nino.nino, "2026-27", json).validateAndWrapResult()
+        val result = validator(nino.nino, taxYear.asMtd, json).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleMissingPartnershipTradesDetailsError.withPath("/partnershipTrades/0")))
       }
 
       def testWith(error: MtdError)(body: JsValue, path: String): Unit = {
         s"return an error for $path" in {
           val result: Either[ErrorWrapper, CreateAmendPartnerIncomeRequestData] =
-            validator(nino.nino, "2026-27", body).validateAndWrapResult()
+            validator(nino.nino, taxYear.asMtd, body).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, error.withPath(path)))
         }

@@ -19,7 +19,7 @@ package v1.createAmendPartnerIncome.model.request
 import api.utils.UnitSpec
 import play.api.libs.json.Json
 
-class PartnerShipTradeSpec extends UnitSpec {
+class PartnershipTradeSpec extends UnitSpec {
 
   private val json = Json.parse(
     """
@@ -49,7 +49,7 @@ class PartnerShipTradeSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  private val model = PartnerShipTrade(
+  private val model = PartnershipTrade(
     tradeDescription = "Consultancy Services",
     tradingOrProfessionalProfits = Some(
       TradingOrProfessionalProfits(
@@ -79,7 +79,7 @@ class PartnerShipTradeSpec extends UnitSpec {
 
   "reads" should {
     "read from json" in {
-      json.as[PartnerShipTrade] shouldBe model
+      json.as[PartnershipTrade] shouldBe model
     }
   }
 

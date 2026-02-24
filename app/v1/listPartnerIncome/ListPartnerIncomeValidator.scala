@@ -24,10 +24,11 @@ import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import jakarta.inject.Inject
 import v1.listPartnerIncome.model.request.ListPartnerIncomeRequestData
+import v1.minimumTaxYear
 
 class ListPartnerIncomeValidator @Inject() (nino: String, taxYear: String) extends Validator[ListPartnerIncomeRequestData] {
 
-  val resolvedTaxYear: ResolveDetailedTaxYear = ResolveDetailedTaxYear(TaxYear.ending(2027))
+  val resolvedTaxYear: ResolveDetailedTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], ListPartnerIncomeRequestData] =
     (

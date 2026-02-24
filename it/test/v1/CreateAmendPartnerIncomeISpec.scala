@@ -22,10 +22,9 @@ import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.ws.{WSRequest, WSResponse, writeableOf_JsValue}
 import play.api.test.Helpers.*
 import v1.createAmendPartnerIncome.CreateAmendPartnerIncomeFixtures.{fullDownstreamJson, fullMtdJson}
-import play.api.libs.ws.writeableOf_JsValue
 
 class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
 
@@ -52,13 +51,10 @@ class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
       "validation error" should {
-        def validationErrorTest(requestNino: String,
-                                requestTaxYear: String,
-                                expectedStatus: Int,
-                                expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String    = requestNino
             override val taxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
@@ -81,9 +77,7 @@ class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
 
         input.foreach(validationErrorTest.tupled)
       }
-      
 
-         
       "downstream service error" should {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
@@ -111,9 +105,9 @@ class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_START_DATE", BAD_REQUEST, RuleStartDateError),
-          (BAD_REQUEST, "START_DATE_NOT_COMPATIBLE", BAD_REQUEST, RuleEndBeforeStartDateError),
-          (BAD_REQUEST, "INVALID_END_DATE", BAD_REQUEST, RuleEndDateError),
+          (UNPROCESSABLE_ENTITY, "INVALID_START_DATE", BAD_REQUEST, RuleStartDateError),
+          (UNPROCESSABLE_ENTITY, "START_DATE_NOT_COMPATIBLE", BAD_REQUEST, RuleEndBeforeStartDateError),
+          (UNPROCESSABLE_ENTITY, "INVALID_END_DATE", BAD_REQUEST, RuleEndDateError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
@@ -126,7 +120,7 @@ class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    val nino: String = "AA123456A"
+    val nino: String    = "AA123456A"
     val taxYear: String = "2026-27"
 
     def setupStubs(): StubMapping
@@ -160,5 +154,7 @@ class CreateAmendPartnerIncomeISpec extends IntegrationBaseSpec {
          |  }
          |}
         """.stripMargin
+
   }
+
 }

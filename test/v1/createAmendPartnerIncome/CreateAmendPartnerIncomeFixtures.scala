@@ -25,7 +25,7 @@ import v1.createAmendPartnerIncome.model.request.{
   OffshoreFundsIncome,
   OtherUntaxedForeignIncome,
   OtherUntaxedUkIncome,
-  PartnerShipTrade,
+  PartnershipTrade,
   TaxPaidAndDeductions,
   TaxedIncomeAndDividendIncome,
   TotalTaxedAndUntaxedIncome,
@@ -268,7 +268,7 @@ object CreateAmendPartnerIncomeFixtures {
     cashBasis = Some(true),
     partnershipTrades = Some(
       Seq(
-        PartnerShipTrade(
+        PartnershipTrade(
           tradeDescription = "Consultancy Services",
           tradingOrProfessionalProfits = Some(
             TradingOrProfessionalProfits(

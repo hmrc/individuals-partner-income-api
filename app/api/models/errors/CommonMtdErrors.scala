@@ -31,9 +31,9 @@ object PartnershipNameFormatError extends MtdError("FORMAT_PARTNERSHIP_NAME", "T
 
 object TradeDescriptionFormatError extends MtdError("FORMAT_TRADE_DESCRIPTION", "The provided trade description is invalid", BAD_REQUEST)
 
-object StartDateFormatError extends MtdError("FORMAT_START_DATE", "The provided Start date is invalid", BAD_REQUEST)
+object StartDateFormatError extends MtdError("FORMAT_START_DATE", "The provided start date is invalid", BAD_REQUEST)
 
-object EndDateFormatError extends MtdError("FORMAT_END_DATE", "The provided End date is invalid", BAD_REQUEST)
+object EndDateFormatError extends MtdError("FORMAT_END_DATE", "The provided end date is invalid", BAD_REQUEST)
 
 object DateFormatError extends MtdError(code = "FORMAT_DATE", message = "The supplied date format is not valid", BAD_REQUEST)
 
@@ -53,7 +53,7 @@ object RuleStartDateError extends MtdError("RULE_START_DATE", "The start date do
 
 object RuleEndDateError extends MtdError("RULE_END_DATE", "The end date does not fall within the tax year provided", BAD_REQUEST)
 
-object RuleEndBeforeStartDateError extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "\tThe end date is before the start date", BAD_REQUEST)
+object RuleEndBeforeStartDateError extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The end date is before the start date", BAD_REQUEST)
 
 object RuleDuplicateTradeDescriptionError
     extends MtdError("RULE_DUPLICATE_TRADE_DESCRIPTION", "The trade description already exists for this partnership", BAD_REQUEST)
