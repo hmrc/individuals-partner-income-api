@@ -165,7 +165,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
             TradeDescriptionFormatError.withPaths(Seq("/partnershipTrades/0/tradeDescription", "/partnershipTrades/1/tradeDescription"))))
       }
 
-      "passed a body containing duplicate trade descriptions" in {
+      "passed a body containing case-insensitive duplicate trade descriptions" in {
         val replacement = Json.parse(s"""
              |[
              |  {
@@ -177,7 +177,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
              |    }
              |  },
              |  {
-             |    "tradeDescription": "Consultancy Services",
+             |    "tradeDescription": " consultancy services ",
              |    "tradingOrProfessionalProfits": {
              |      "shareOfProfitOrLoss": 5000.99,
              |      "adjustedProfit": 5000.99,

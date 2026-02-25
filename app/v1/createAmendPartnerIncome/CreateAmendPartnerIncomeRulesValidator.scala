@@ -73,6 +73,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
     val tradeDescriptionRegex = "^.{1,30}$".r
     val indexedDescriptions = partnershipTrades
       .map(pt => (pt._1.tradeDescription, pt._2))
+    def sanitise(value: String) = value.trim.toLowerCase
 
     indexedDescriptions
       .traverse { case (tradeDescription, index) =>
@@ -81,13 +82,13 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
       }
       .andThen { _ =>
         val duplicates = indexedDescriptions
-          .groupBy(_._1)
+          .groupBy { case (value, _) => sanitise(value) }
           .collect {
             case (value, pairs) if pairs.size > 1 => value
           }
           .toSet
         val validated = indexedDescriptions.map { case (value, idx) =>
-          if (duplicates(value))
+          if (duplicates(sanitise(value)))
             Invalid(List(RuleDuplicateTradeDescriptionError.withPath(s"/partnershipTrades/$idx/tradeDescription")))
           else
             valid
@@ -114,8 +115,8 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
   private def validatePartnershipTradeNumericValues(partnershipTrades: Seq[(PartnershipTrade, Int)]): Validated[Seq[MtdError], Seq[Unit]] = {
     partnershipTrades
-      .traverse { case (partnerShipTrade, idx) =>
-        import partnerShipTrade.*
+      .traverse { case (partnershipTrade, idx) =>
+        import partnershipTrade.*
 
         val nonNegative = List(
           (tradingOrProfessionalProfits.map(_.adjustedProfit), s"/partnershipTrades/$idx/tradingOrProfessionalProfits/adjustedProfit"),
