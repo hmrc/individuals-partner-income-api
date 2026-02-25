@@ -16,12 +16,13 @@
 
 package v1.retrievePartnerIncome.model.response
 
+import api.models.domain.Timestamp
 import play.api.libs.json.*
 import play.api.libs.functional.syntax.*
 import utils.JsonUtils
 
 case class RetrievePartnerIncomeResponse(
-    submittedOn: String,
+    submittedOn: Timestamp,
     partnershipUtr: String,
     partnershipName: String,
     startDate: Option[String],
@@ -43,7 +44,7 @@ case class RetrievePartnerIncomeResponse(
 object RetrievePartnerIncomeResponse extends JsonUtils {
 
   private val singleReads: Reads[RetrievePartnerIncomeResponse] = (
-    (JsPath \ "submittedOn").read[String] and
+    (JsPath \ "submittedOn").read[Timestamp] and
       (JsPath \ "partnershipUTR").read[String] and
       (JsPath \ "partnershipName").read[String] and
       (JsPath \ "startDate").readNullable[String] and

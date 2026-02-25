@@ -20,13 +20,18 @@ import api.models.domain.PartnershipUtr
 import api.models.errors.{MtdError, PartnershipUtrFormatError}
 import cats.data.Validated
 
-object ResolvePartnershipUtr extends ResolverSupport {
+case class ResolvePartnershipUtr(formatError: MtdError) extends ResolverSupport {
 
   private val partnershipUtrRegex = "^[0-9]{10}$".r
 
   val resolver: Resolver[String, PartnershipUtr] =
-    ResolveStringPattern(partnershipUtrRegex, PartnershipUtrFormatError).resolver.map(PartnershipUtr.apply)
+    ResolveStringPattern(partnershipUtrRegex, formatError).resolver.map(PartnershipUtr.apply)
 
-  def apply(value: String): Validated[Seq[MtdError], PartnershipUtr] = resolver(value)
+}
+
+object ResolvePartnershipUtr extends ResolverSupport {
+
+  def apply(value: String, formatError: MtdError = PartnershipUtrFormatError): Validated[Seq[MtdError], PartnershipUtr] =
+    ResolvePartnershipUtr(formatError).resolver(value)
 
 }

@@ -1,0 +1,92 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v1.createAmendPartnerIncome.model.request
+
+import api.utils.UnitSpec
+import play.api.libs.json.Json
+
+class PartnershipTradeSpec extends UnitSpec {
+
+  private val json = Json.parse(
+    """
+      |{
+      |  "tradeDescription": "Consultancy Services",
+      |  "tradingOrProfessionalProfits": {
+      |    "shareOfProfitOrLoss": 5000.99,
+      |    "basisAdjustment": 5000.99,
+      |    "accountingAdjustment": 5000.99,
+      |    "averagingAdjustment": 5000.99,
+      |    "foreignTaxClaimedDeduction": 5000.99,
+      |    "adjustedProfit": 5000.99,
+      |    "transitionProfitArisingThisYear": 5000.99,
+      |    "lossesBroughtForwardTransitionProfit": 5000.99,
+      |    "lossesBroughtForwardAdjustedProfit": 5000.99,
+      |    "profitAfterBroughtForwardLosses": 5000.99,
+      |    "otherBusinessIncome": 5000.99,
+      |    "shareOfTaxableProfit": 5000.99
+      |  },
+      |  "tradingOrProfessionalLosses": {
+      |    "adjustedLoss": 5000.99,
+      |    "currentYearLossAppliedToGeneralIncome": 5000.99,
+      |    "lossesCarriedBack": 5000.99,
+      |    "carryForwardLosses": 5000.99
+      |  }
+      |}
+      |""".stripMargin
+  )
+
+  private val model = PartnershipTrade(
+    tradeDescription = "Consultancy Services",
+    tradingOrProfessionalProfits = Some(
+      TradingOrProfessionalProfits(
+        shareOfProfitOrLoss = 5000.99,
+        basisAdjustment = Some(5000.99),
+        accountingAdjustment = Some(5000.99),
+        averagingAdjustment = Some(5000.99),
+        foreignTaxClaimedDeduction = Some(5000.99),
+        adjustedProfit = 5000.99,
+        transitionProfitArisingThisYear = Some(5000.99),
+        lossesBroughtForwardTransitionProfit = Some(5000.99),
+        lossesBroughtForwardAdjustedProfit = Some(5000.99),
+        profitAfterBroughtForwardLosses = Some(5000.99),
+        otherBusinessIncome = Some(5000.99),
+        shareOfTaxableProfit = 5000.99
+      )
+    ),
+    tradingOrProfessionalLosses = Some(
+      TradingOrProfessionalLosses(
+        adjustedLoss = Some(5000.99),
+        currentYearLossAppliedToGeneralIncome = Some(5000.99),
+        lossesCarriedBack = Some(5000.99),
+        carryForwardLosses = Some(5000.99)
+      )
+    )
+  )
+
+  "reads" should {
+    "read from json" in {
+      json.as[PartnershipTrade] shouldBe model
+    }
+  }
+
+  "writes" should {
+    "write to json" in {
+      Json.toJson(model) shouldBe json
+    }
+  }
+
+}

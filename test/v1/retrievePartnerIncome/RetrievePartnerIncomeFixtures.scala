@@ -16,7 +16,7 @@
 
 package v1.retrievePartnerIncome
 
-import api.models.domain.{Nino, PartnershipUtr, TaxYear}
+import api.models.domain.{Nino, PartnershipUtr, TaxYear, Timestamp}
 import play.api.libs.json.{JsValue, Json}
 import v1.retrievePartnerIncome.model.request.RetrievePartnerIncomeRequestData
 import v1.retrievePartnerIncome.model.response.*
@@ -32,7 +32,7 @@ object RetrievePartnerIncomeFixtures {
 
   val responseModel: RetrievePartnerIncomeResponse =
     RetrievePartnerIncomeResponse(
-      submittedOn = "2026-08-24T14:15:22.544Z",
+      submittedOn = Timestamp("2026-08-24T14:15:22.544Z"),
       partnershipUtr = "4564564564",
       partnershipName = "ABC Partnership",
       startDate = Some("2026-06-24"),
@@ -151,7 +151,7 @@ object RetrievePartnerIncomeFixtures {
 
   val responseModelWithMissingFields: RetrievePartnerIncomeResponse =
     RetrievePartnerIncomeResponse(
-      submittedOn = "2026-08-24T14:15:22.544Z",
+      submittedOn = Timestamp("2026-08-24T14:15:22.544Z"),
       partnershipUtr = "4564564564",
       partnershipName = "ABC Partnership",
       startDate = None,
