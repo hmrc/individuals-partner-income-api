@@ -28,12 +28,10 @@ import v1.minimumTaxYear
 
 class ListPartnerIncomeValidator @Inject() (nino: String, taxYear: String) extends Validator[ListPartnerIncomeRequestData] {
 
-  val resolvedTaxYear: ResolveDetailedTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
-
   def validate: Validated[Seq[MtdError], ListPartnerIncomeRequestData] =
     (
       ResolveNino(nino),
-      resolvedTaxYear(taxYear)
+      ResolveDetailedTaxYear(minimumTaxYear).apply(taxYear)
     ).mapN(ListPartnerIncomeRequestData.apply)
 
 }

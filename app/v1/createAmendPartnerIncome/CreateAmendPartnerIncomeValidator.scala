@@ -32,14 +32,11 @@ import javax.inject.Inject
 class CreateAmendPartnerIncomeValidator @Inject() (nino: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendPartnerIncomeRequestData] {
 
-  private val resolvedTaxYear = ResolveDetailedTaxYear(minimumTaxYear)
-  private val resolvedJson    = ResolveNonEmptyJsonObject[CreateAmendPartnerIncomeRequestBody]()
-
   def validate: Validated[Seq[MtdError], CreateAmendPartnerIncomeRequestData] =
     (
       ResolveNino(nino),
-      resolvedTaxYear(taxYear),
-      resolvedJson(body)
+      ResolveDetailedTaxYear(minimumTaxYear).apply(taxYear),
+      ResolveNonEmptyJsonObject[CreateAmendPartnerIncomeRequestBody].apply(body)
     ).mapN(CreateAmendPartnerIncomeRequestData.apply) andThen validateBusinessRules
 
 }
