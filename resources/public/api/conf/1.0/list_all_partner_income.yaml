@@ -1,16 +1,15 @@
-summary: List All Partner Income
+summary: List All Partner Income Submissions
 description: |
-  This endpoint enables you to retrieve a list of all partner income submissions. A National Insurance number and
-  tax year must be provided.
+  This endpoint enables you to retrieve a list of all partner income submissions. A National Insurance number and tax year must be provided.
   
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.    
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                                                         |
-  |----------------------------------|--------------------------------------------------------------------------------------------------|
-  | N/A - DEFAULT                    | Simulates a successful response.                                 |
-  | NOT_FOUND                        | Simulates the scenario where no data is found.                                                   |
-  | STATEFUL                         | Performs a stateful list.                                                                        |
+  | Header Value (Gov-Test-Scenario) | Scenario                                       |
+  |----------------------------------|------------------------------------------------|
+  | N/A - DEFAULT                    | Simulates success response.                    |
+  | NOT_FOUND                        | Simulates the scenario where no data is found. |
+  | STATEFUL                         | Performs a stateful list.                      |
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -29,21 +28,30 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
           $ref: './schemas/list_all_partner_income_response.json'
-        examples:
-          example-response:
-            description: Example Response
-            value:
-              $ref: './examples/list_all_response.json'
+        example:
+          $ref: './examples/list_all_response.json'
 
   "400":
     description: Bad request
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -65,6 +73,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -78,6 +92,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:

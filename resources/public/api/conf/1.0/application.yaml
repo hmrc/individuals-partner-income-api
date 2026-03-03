@@ -6,11 +6,10 @@ info:
   description: |
 
     The following endpoints are stateful in the Sandbox:
+      * List All Partner Income Submissions    
       * Create or Amend Partner Income
-      * List All Partner Income Submissions
       * Retrieve Partner Income
       * Delete Partner Income
-
 
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 

@@ -19,7 +19,7 @@ components:
       description: One or more values have been added with the incorrect format.
       value:
         code: FORMAT_VALUE
-        message: The value must be between 0.00 and 99999999999.99
+        message: The value must be between 0 and 99999999999.99
 
     formatPartnershipUtr:
       description: The format of the supplied partnership UTR field is not valid.
@@ -120,7 +120,7 @@ components:
         the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
       value:
         code: CLIENT_OR_AGENT_NOT_AUTHORISED
-        message: The client and/or agent is not authorised
+        message: The client or agent is not authorised
 
     # 404
 
@@ -129,11 +129,3 @@ components:
       value:
         code: MATCHING_RESOURCE_NOT_FOUND
         message: Matching resource not found
-
-    #422
-
-    requestCannotBeFulfilled:
-      description: The request cannot be fulfilled. More specific information is provided in the error message.
-      value:
-        code: RULE_REQUEST_CANNOT_BE_FULFILLED
-        message: Custom (will vary in production depending on the actual error)

@@ -1,6 +1,7 @@
 summary: Create or Amend Partner Income
 description: |
   This endpoint enables you to create or amend partner income. A National Insurance number and tax year must be provided.
+  
   <strong>Note: The partnership UTR in the request body is used to identify the submission for both creation and amendment.</strong>
   
   ### Test data
@@ -10,13 +11,13 @@ description: |
   | -------------------------------- | ------------------------------------------------------------------------------------------------|
   | N/A - DEFAULT                    | Simulates success response.                                                                     |
   | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
-  | STATEFUL                         | Performs a stateful update.                                                                     |
-
+  | STATEFUL                         | Performs a stateful create or update.                                                           |
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
@@ -29,10 +30,8 @@ requestBody:
     application/json:
       schema:
         $ref: './schemas/create_amend_partner_income_request.json'
-      examples:
-        example:
-          value:
-            $ref: './examples/create_amend_request.json'
+      example:
+        $ref: './examples/create_amend_request.json'
 
 responses:
   "204":
@@ -40,14 +39,24 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: { }
-
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
 
   "400":
     description: Bad request
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -95,6 +104,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
