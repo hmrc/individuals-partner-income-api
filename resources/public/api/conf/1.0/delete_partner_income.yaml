@@ -13,7 +13,6 @@ description: |
   | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
   | STATEFUL                         | Performs a stateful delete.                                                                     |
 
-
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
@@ -28,16 +27,28 @@ security:
 
 responses:
   "204":
-    description: No Content
+    description: Success (No Content)
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
 
   "400":
     description: Bad request
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -63,6 +74,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -76,6 +93,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:

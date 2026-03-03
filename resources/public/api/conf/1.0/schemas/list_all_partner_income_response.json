@@ -1,12 +1,11 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Get a List of all Partner Income Submissions",
-  "description": "Get List of Partner Income Submissions",
   "type": "object",
   "properties": {
     "partnerIncomeSubmissions": {
       "type": "array",
       "description": "An array containing details of all partner income submissions.",
+      "minItems": 1,
       "items": {
         "type": "object",
         "properties": {
@@ -20,9 +19,7 @@
             "description": "The name of the partnership.",
             "type": "string",
             "example": "ABC Partnership",
-            "pattern": "^.{1,105}$",
-            "minimum": 1,
-            "maximum": 105
+            "pattern": "^.{1,105}$"
           }
         },
         "required": [
