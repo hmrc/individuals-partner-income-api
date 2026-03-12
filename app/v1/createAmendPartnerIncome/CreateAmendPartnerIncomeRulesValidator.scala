@@ -155,8 +155,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
           (tradingOrProfessionalProfits.map(_.shareOfProfitOrLoss), s"/partnershipTrades/$idx/tradingOrProfessionalProfits/shareOfProfitOrLoss")
 
         val optNegative = List(
-          (tradingOrProfessionalProfits.flatMap(_.basisAdjustment), s"/partnershipTrades/0/tradingOrProfessionalProfits/basisAdjustment"),
-          (tradingOrProfessionalProfits.flatMap(_.averagingAdjustment), s"/partnershipTrades/0/tradingOrProfessionalProfits/averagingAdjustment")
+          (tradingOrProfessionalProfits.flatMap(_.basisAdjustment), s"/partnershipTrades/0/tradingOrProfessionalProfits/basisAdjustment")
         )
 
         val validateNonNegative: List[Validated[Seq[MtdError], Option[BigDecimal]]] = nonNegative.map((n, p) => resolveNonNegativeParsedNumber(n, p))

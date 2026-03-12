@@ -18,20 +18,17 @@ package v1.retrievePartnerIncome.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class TradingOrProfessionalProfits(
-    shareOfProfitOrLoss: BigDecimal,
-    basisAdjustment: Option[BigDecimal],
-    accountingAdjustment: Option[BigDecimal],
-    averagingAdjustment: Option[BigDecimal],
-    foreignTaxClaimedDeduction: Option[BigDecimal],
-    adjustedProfit: BigDecimal,
-    transitionProfitArisingThisYear: Option[BigDecimal],
-    lossesBroughtForwardTransitionProfit: Option[BigDecimal],
-    lossesBroughtForwardAdjustedProfit: Option[BigDecimal],
-    profitAfterBroughtForwardLosses: Option[BigDecimal],
-    otherBusinessIncome: Option[BigDecimal],
-    shareOfTaxableProfit: BigDecimal
-)
+case class TradingOrProfessionalProfits(shareOfProfitOrLoss: BigDecimal,
+                                        basisAdjustment: Option[BigDecimal],
+                                        accountingAdjustment: Option[BigDecimal],
+                                        foreignTaxClaimedDeduction: Option[BigDecimal],
+                                        adjustedProfit: BigDecimal,
+                                        transitionProfitArisingThisYear: Option[BigDecimal],
+                                        lossesBroughtForwardTransitionProfit: Option[BigDecimal],
+                                        lossesBroughtForwardAdjustedProfit: Option[BigDecimal],
+                                        profitAfterBroughtForwardLosses: Option[BigDecimal],
+                                        otherBusinessIncome: Option[BigDecimal],
+                                        shareOfTaxableProfit: BigDecimal)
 
 object TradingOrProfessionalProfits {
   implicit val format: OFormat[TradingOrProfessionalProfits] = Json.format[TradingOrProfessionalProfits]

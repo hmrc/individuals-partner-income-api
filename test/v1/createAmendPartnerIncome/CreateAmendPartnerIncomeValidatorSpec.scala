@@ -19,7 +19,7 @@ package v1.createAmendPartnerIncome
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
+import play.api.libs.json.*
 import v1.createAmendPartnerIncome.CreateAmendPartnerIncomeFixtures.*
 import v1.createAmendPartnerIncome.model.request.CreateAmendPartnerIncomeRequestData
 
@@ -268,8 +268,7 @@ class CreateAmendPartnerIncomeValidatorSpec extends UnitSpec with JsonErrorValid
 
         List(
           "/partnershipTrades/0/tradingOrProfessionalProfits/shareOfProfitOrLoss",
-          "/partnershipTrades/0/tradingOrProfessionalProfits/basisAdjustment",
-          "/partnershipTrades/0/tradingOrProfessionalProfits/averagingAdjustment"
+          "/partnershipTrades/0/tradingOrProfessionalProfits/basisAdjustment"
         ).foreach(path =>
           val json = updatePath(fullMtdJson, path, JsNumber(123.456))
           testValueFormatErrorWithNegativeValue(json, path)
