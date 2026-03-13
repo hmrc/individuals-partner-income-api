@@ -24,6 +24,7 @@ import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.syntax.all.*
 import v1.createAmendPartnerIncome.model.request.{CreateAmendPartnerIncomeRequestBody, CreateAmendPartnerIncomeRequestData, PartnershipTrade}
+
 import java.time.LocalDate
 
 object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmendPartnerIncomeRequestData] {
@@ -154,18 +155,16 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
         val negative =
           (tradingOrProfessionalProfits.map(_.shareOfProfitOrLoss), s"/partnershipTrades/$idx/tradingOrProfessionalProfits/shareOfProfitOrLoss")
 
-        val optNegative = List(
+        val optNegative =
           (tradingOrProfessionalProfits.flatMap(_.basisAdjustment), s"/partnershipTrades/0/tradingOrProfessionalProfits/basisAdjustment")
-        )
 
         val validateNonNegative: List[Validated[Seq[MtdError], Option[BigDecimal]]] = nonNegative.map((n, p) => resolveNonNegativeParsedNumber(n, p))
         val validateOptNonNegative: List[Validated[Seq[MtdError], Option[BigDecimal]]] =
           optNonNegative.map((n, p) => resolveNonNegativeParsedNumber(n, p))
-        val validateOptNegative: List[Validated[Seq[MtdError], Option[BigDecimal]]] =
-          optNegative.map((n, p) => resolveMaybeNegativeParsedNumber(n, p))
-        val validateNegative: Validated[Seq[MtdError], Option[BigDecimal]] = resolveMaybeNegativeParsedNumber(negative._1, negative._2)
+        val validateOptNegative: Validated[Seq[MtdError], Option[BigDecimal]] = resolveMaybeNegativeParsedNumber(optNegative._1, optNegative._2)
+        val validateNegative: Validated[Seq[MtdError], Option[BigDecimal]]    = resolveMaybeNegativeParsedNumber(negative._1, negative._2)
 
-        (validateNonNegative ++ validateOptNonNegative ++ validateOptNegative :+ validateNegative).sequence.andThen(_ => valid)
+        (validateNonNegative ++ validateOptNonNegative :+ validateOptNegative :+ validateNegative).sequence.andThen(_ => valid)
       }
 
   }
