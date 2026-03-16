@@ -18,20 +18,17 @@ package v1.createAmendPartnerIncome.model.request
 
 import play.api.libs.json.{OFormat, Json}
 
-case class TradingOrProfessionalProfits(
-    shareOfProfitOrLoss: BigDecimal,
-    basisAdjustment: Option[BigDecimal],
-    accountingAdjustment: Option[BigDecimal],
-    averagingAdjustment: Option[BigDecimal],
-    foreignTaxClaimedDeduction: Option[BigDecimal],
-    adjustedProfit: BigDecimal,
-    transitionProfitArisingThisYear: Option[BigDecimal],
-    lossesBroughtForwardTransitionProfit: Option[BigDecimal],
-    lossesBroughtForwardAdjustedProfit: Option[BigDecimal],
-    profitAfterBroughtForwardLosses: Option[BigDecimal],
-    otherBusinessIncome: Option[BigDecimal],
-    shareOfTaxableProfit: BigDecimal
-)
+case class TradingOrProfessionalProfits(shareOfProfitOrLoss: BigDecimal,
+                                        basisAdjustment: Option[BigDecimal],
+                                        accountingAdjustment: Option[BigDecimal],
+                                        foreignTaxClaimedDeduction: Option[BigDecimal],
+                                        adjustedProfit: BigDecimal,
+                                        transitionProfitArisingThisYear: Option[BigDecimal],
+                                        lossesBroughtForwardTransitionProfit: Option[BigDecimal],
+                                        lossesBroughtForwardAdjustedProfit: Option[BigDecimal],
+                                        profitAfterBroughtForwardLosses: Option[BigDecimal],
+                                        otherBusinessIncome: Option[BigDecimal],
+                                        shareOfTaxableProfit: BigDecimal)
 
 object TradingOrProfessionalProfits {
   given OFormat[TradingOrProfessionalProfits] = Json.format[TradingOrProfessionalProfits]
