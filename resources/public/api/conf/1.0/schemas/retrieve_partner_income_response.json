@@ -78,14 +78,6 @@
                 "multipleOf": 0.01,
                 "example": 5000.99
               },
-              "averagingAdjustment": {
-                "description": "The averaging adjustment (only for farmers, market gardeners and creators of literary or artistic works) – if the adjustment needs to be taken off the profit figure, this should be negative. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
-                "type": "number",
-                "minimum": -99999999999.99,
-                "maximum": 99999999999.99,
-                "multipleOf": 0.01,
-                "example": 5000.99
-              },
               "foreignTaxClaimedDeduction": {
                 "description": "The foreign tax claimed as deduction only if Foreign Tax Credit Relief is not claimed. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
@@ -95,7 +87,7 @@
                 "example": 5000.99
               },
               "adjustedProfit": {
-                "description": "The individual's share of the partnership's profit of the year, after all statutory adjustments (basis, accounting, averaging and foreign tax) have been applied. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "description": "The individual's share of the partnership's profit of the year, after all statutory adjustments have been applied. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
                 "minimum": 0,
                 "maximum": 99999999999.99,
@@ -163,7 +155,7 @@
             "type": "object",
             "properties": {
               "adjustedLoss": {
-                "description": "The individual's share of the partnership's loss of the year, after all statutory adjustments (basis, accounting, averaging and foreign tax) have been applied. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "description": "The individual's share of the partnership's loss of the year, after all statutory adjustments have been applied. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
                 "minimum": 0,
                 "maximum": 99999999999.99,
