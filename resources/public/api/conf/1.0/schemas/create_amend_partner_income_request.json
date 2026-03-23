@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "partnershipUtr": {
-      "description": "A Unique Taxpayer Reference (UTR) for the partnership.",
+      "description": "A Unique Taxpayer Reference (UTR) for the partnership. If you are a partner in a foreign partnership, you will not have a partnership reference, so submit your personal UTR.",
       "type": "string",
       "example": "4564564564",
       "pattern": "^[0-9]{10}$"
