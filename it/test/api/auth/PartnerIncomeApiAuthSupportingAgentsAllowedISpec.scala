@@ -34,8 +34,9 @@ class PartnerIncomeApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAge
 
   override val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.GET
 
-  val maybeDownstreamResponseJson: Option[JsValue] = Some(Json.parse(
-    """
+  val maybeDownstreamResponseJson: Option[JsValue] = Some(
+    Json.parse(
+      """
       |{
       |  "partnerIncomeSubmissions": [
       |    {
@@ -49,6 +50,6 @@ class PartnerIncomeApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAge
       |  ]
       |}
       |""".stripMargin
-  ))
+    ))
 
 }
