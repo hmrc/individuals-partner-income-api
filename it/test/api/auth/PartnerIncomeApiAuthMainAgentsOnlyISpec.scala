@@ -34,8 +34,9 @@ class PartnerIncomeApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
   override val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.GET
 
-  val maybeDownstreamResponseJson: Option[JsValue] = Some(Json.parse(
-    """
+  val maybeDownstreamResponseJson: Option[JsValue] = Some(
+    Json.parse(
+      """
       |{
       |  "partnerIncomeSubmissions": [
       |    {
@@ -49,6 +50,6 @@ class PartnerIncomeApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
       |  ]
       |}
       |""".stripMargin
-  ))
+    ))
 
 }
