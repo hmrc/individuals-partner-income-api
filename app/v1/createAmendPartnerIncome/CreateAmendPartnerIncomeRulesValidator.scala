@@ -49,7 +49,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
   private val partnershipNameRegex = "^.{1,105}$".r
 
   private def validatePartnershipName(name: String): Validated[Seq[MtdError], String] =
-    ResolveStringPattern(partnershipNameRegex, PartnershipNameFormatError.withPath("/partnershipName"))(name)
+    ResolveStringPattern(name, partnershipNameRegex, PartnershipNameFormatError.withPath("/partnershipName"))
 
   private def validateStartEndDate(startDate: Option[String], endDate: Option[String], taxYear: TaxYear): Validated[Seq[MtdError], Unit] = {
     val startDatePath = "/startDate"
@@ -78,8 +78,7 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
     indexedDescriptions
       .traverse { case (tradeDescription, index) =>
-        ResolveStringPattern(tradeDescriptionRegex, TradeDescriptionFormatError.withPath(s"/partnershipTrades/$index/tradeDescription"))(
-          tradeDescription)
+        ResolveStringPattern(tradeDescription, tradeDescriptionRegex, TradeDescriptionFormatError.withPath(s"/partnershipTrades/$index/tradeDescription"))
       }
       .andThen { _ =>
         val duplicates = indexedDescriptions
