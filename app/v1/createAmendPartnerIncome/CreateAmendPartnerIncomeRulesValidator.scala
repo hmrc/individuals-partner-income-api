@@ -78,7 +78,10 @@ object CreateAmendPartnerIncomeRulesValidator extends RulesValidator[CreateAmend
 
     indexedDescriptions
       .traverse { case (tradeDescription, index) =>
-        ResolveStringPattern(tradeDescription, tradeDescriptionRegex, TradeDescriptionFormatError.withPath(s"/partnershipTrades/$index/tradeDescription"))
+        ResolveStringPattern(
+          tradeDescription,
+          tradeDescriptionRegex,
+          TradeDescriptionFormatError.withPath(s"/partnershipTrades/$index/tradeDescription"))
       }
       .andThen { _ =>
         val duplicates = indexedDescriptions
