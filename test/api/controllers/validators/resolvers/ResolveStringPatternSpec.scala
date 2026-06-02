@@ -44,7 +44,6 @@ class ResolveStringPatternSpec extends UnitSpec {
         result shouldBe Valid(None)
       }
 
-
       "given a matching string via the legacy apply() function" in {
         val result = ResolveStringPattern("2024-25", taxYearRegex, TaxYearFormatError)
         result shouldBe Valid("2024-25")
