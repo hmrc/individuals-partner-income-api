@@ -85,7 +85,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = false
             |        api-released-in-production = false
-            |        allow-request-cannot-be-fulfilled-header = false
             |      }
             |    }
             |""".stripMargin
@@ -105,7 +104,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = true
             |        api-released-in-production = true
-            |        allow-request-cannot-be-fulfilled-header = false
             |
             |        released-in-production {
             |          create-something: true
@@ -122,25 +120,6 @@ class AppConfigSpec extends UnitSpec {
     }
   }
 
-  "allowRequestCannotBeFulfilledHeader" when {
-    "the API version allows request cannot be fulfilled header" should {
-      "return true" in {
-        val appConfigWithAllowRequestCannotBeFulfilledHeader = appConfig(
-          """
-            |    1.0 {
-            |      endpoints {
-            |        allow-request-cannot-be-fulfilled-header = true
-            |      }
-            |    }
-            |""".stripMargin
-        )
-
-        val result = appConfigWithAllowRequestCannotBeFulfilledHeader.allowRequestCannotBeFulfilledHeader(Version1)
-        result shouldBe true
-      }
-    }
-  }
-
   "endpointReleasedInProduction" when {
     "the API version is enabled and the config specifies the endpoint status as true" should {
       "return true" in {
@@ -151,7 +130,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = true
             |        api-released-in-production = true
-            |        allow-request-cannot-be-fulfilled-header = false
             |
             |        released-in-production {
             |          create-something: true
@@ -175,7 +153,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = true
             |        api-released-in-production = true
-            |        allow-request-cannot-be-fulfilled-header = false
             |
             |        released-in-production {
             |          create-something: true
@@ -199,7 +176,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = true
             |        api-released-in-production = true
-            |        allow-request-cannot-be-fulfilled-header = false
             |
             |        released-in-production {
             |          create-something: true
@@ -228,7 +204,6 @@ class AppConfigSpec extends UnitSpec {
             |      endpoints {
             |        enabled = true
             |        api-released-in-production = true
-            |        allow-request-cannot-be-fulfilled-header = false
             |      }
             |    }
             |""".stripMargin
@@ -249,7 +224,6 @@ class AppConfigSpec extends UnitSpec {
               |      endpoints {
               |        enabled = true
               |        api-released-in-production = true
-              |        allow-request-cannot-be-fulfilled-header = false
               |      }
               |    }
                 """.stripMargin
@@ -274,7 +248,6 @@ class AppConfigSpec extends UnitSpec {
                   |      endpoints {
                   |        enabled = true
                   |        api-released-in-production = true
-                  |        allow-request-cannot-be-fulfilled-header = false
                   |      }
                   |    }
                     """.stripMargin
@@ -300,8 +273,7 @@ class AppConfigSpec extends UnitSpec {
                   |      deprecatedOn = "2024-01-15"
                   |      endpoints {
                   |        enabled = true
-                  |        api-released-in-production = true
-                  |        allow-request-cannot-be-fulfilled-header = false
+                  |        api-released-in-production = true     
                   |      }
                   |    }
                     """.stripMargin
@@ -331,8 +303,7 @@ class AppConfigSpec extends UnitSpec {
                   |      sunsetEnabled = false
                   |      endpoints {
                   |        enabled = true
-                  |        api-released-in-production = true
-                  |        allow-request-cannot-be-fulfilled-header = false
+                  |        api-released-in-production = true     
                   |      }
                   |    }
                     """.stripMargin
@@ -359,8 +330,7 @@ class AppConfigSpec extends UnitSpec {
                   |      sunsetEnabled = false
                   |      endpoints {
                   |        enabled = true
-                  |        api-released-in-production = true
-                  |        allow-request-cannot-be-fulfilled-header = false
+                  |        api-released-in-production = true     
                   |      }
                   |    }
                     """.stripMargin
@@ -388,8 +358,7 @@ class AppConfigSpec extends UnitSpec {
                 |      sunsetDate = "2023-12-31"
                 |      endpoints {
                 |        enabled = true
-                |        api-released-in-production = true
-                |        allow-request-cannot-be-fulfilled-header = false
+                |        api-released-in-production = true   
                 |      }
                 |    }
                   """.stripMargin
