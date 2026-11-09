@@ -20,7 +20,7 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.config.Deprecation.{Deprecated, NotDeprecated, ScheduledDeprecation}
 import api.routing.*
 import api.utils.UnitSpec
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -193,24 +193,158 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "deprecationFor" when {
-    "the API version is not deprecated" should {
-      "return NotDeprecated" in {
-        val config: AppConfig = appConfig(
-          """
-            |    1.0 {
-            |      status = "BETA"
-            |      deprecatedOn = "2024-01-15"
-            |      sunsetDate = "2025-01-15"
-            |      endpoints {
-            |        enabled = true
-            |        api-released-in-production = true
-            |      }
-            |    }
-            |""".stripMargin
-        )
+    "the API version is not deprecated" when {
+      "deprecatedOn is missing" should {
+        "return NotDeprecated" in {
+          val config: AppConfig = appConfig(
+            """
+              |    1.0 {
+              |      status = "BETA"
+              |      endpoints {
+              |        enabled = true
+              |        api-released-in-production = true
+              |      }
+              |    }
+                """.stripMargin
+          )
 
-        config.deprecationFor(Version1) shouldBe Valid(NotDeprecated)
+          config.deprecationFor(Version1) shouldBe Valid(NotDeprecated)
+        }
+      }
 
+      "deprecatedOn exists" when {
+        "sunsetEnabled is true (default)" when {
+          "sunsetDate is provided" should {
+            "return ScheduledDeprecation with supplied sunsetDate" in {
+              val config: AppConfig = appConfig(
+                """
+                  |    1.0 {
+                  |      status = "BETA"
+                  |      deprecatedOn = "2027-01-15"
+                  |      sunsetDate = "2028-01-15"
+                  |      endpoints {
+                  |        enabled = true
+                  |        api-released-in-production = true
+                  |      }
+                  |    }
+                    """.stripMargin
+              )
+
+              val result: Validated[String, Deprecation] = config.deprecationFor(Version1)
+
+              result shouldBe Valid(
+                ScheduledDeprecation(
+                  deprecatedOn = LocalDate.parse("2027-01-15").plusDays(1).atStartOfDay.minusSeconds(1),
+                  sunsetDate = Some(LocalDate.parse("2028-01-15").plusDays(1).atStartOfDay.minusSeconds(1))
+                )
+              )
+            }
+          }
+
+          "sunsetDate is not provided" should {
+            "return ScheduledDeprecation with default sunsetDate (+6 months)" in {
+              val config: AppConfig = appConfig(
+                """
+                  |    1.0 {
+                  |      status = "BETA"
+                  |      deprecatedOn = "2027-01-15"
+                  |      endpoints {
+                  |        enabled = true
+                  |        api-released-in-production = true
+                  |      }
+                  |    }
+                    """.stripMargin
+              )
+
+              val result: Validated[String, Deprecation] = config.deprecationFor(Version1)
+
+              result shouldBe Valid(
+                ScheduledDeprecation(
+                  deprecatedOn = LocalDate.parse("2027-01-15").plusDays(1).atStartOfDay.minusSeconds(1),
+                  sunsetDate = Some(LocalDate.parse("2027-07-15").plusDays(1).atStartOfDay.minusSeconds(1))
+                )
+              )
+            }
+          }
+        }
+
+        "sunsetEnabled is false" when {
+          "sunsetDate is provided" should {
+            "return ScheduledDeprecation without the supplied sunsetDate" in {
+              val config: AppConfig = appConfig(
+                """
+                  |    1.0 {
+                  |      status = "BETA"
+                  |      deprecatedOn = "2027-01-15"
+                  |      sunsetDate = "2028-01-15"
+                  |      sunsetEnabled = false
+                  |      endpoints {
+                  |        enabled = true
+                  |        api-released-in-production = true
+                  |      }
+                  |    }
+                    """.stripMargin
+              )
+
+              val result: Validated[String, Deprecation] = config.deprecationFor(Version1)
+
+              result shouldBe Valid(
+                ScheduledDeprecation(
+                  deprecatedOn = LocalDate.parse("2027-01-15").plusDays(1).atStartOfDay.minusSeconds(1),
+                  sunsetDate = None
+                )
+              )
+            }
+          }
+
+          "sunsetDate is not provided" should {
+            "return ScheduledDeprecation with no sunsetDate" in {
+              val config: AppConfig = appConfig(
+                """
+                  |    1.0 {
+                  |      status = "BETA"
+                  |      deprecatedOn = "2027-01-15"
+                  |      sunsetEnabled = false
+                  |      endpoints {
+                  |        enabled = true
+                  |        api-released-in-production = true
+                  |      }
+                  |    }
+                    """.stripMargin
+              )
+
+              val result: Validated[String, Deprecation] = config.deprecationFor(Version1)
+
+              result shouldBe Valid(
+                ScheduledDeprecation(
+                  deprecatedOn = LocalDate.parse("2027-01-15").plusDays(1).atStartOfDay.minusSeconds(1),
+                  sunsetDate = None
+                )
+              )
+            }
+          }
+        }
+      }
+    }
+
+    "sunsetDate is not later than deprecatedOn" should {
+      for {
+        status     <- Seq("BETA", "DEPRECATED")
+        sunsetDate <- Seq("2026-01-14", "2026-01-15")
+      } {
+        s"reject sunsetDate $sunsetDate for status $status" in {
+          val config = appConfig(
+            s"""
+               |1.0 {
+               |  status = "$status"
+               |  deprecatedOn = "2026-01-15"
+               |  sunsetDate = "$sunsetDate"
+               |}
+               |""".stripMargin
+          )
+
+          config.deprecationFor(Version1) shouldBe Invalid("sunsetDate must be later than deprecatedOn date for version 1.0")
+        }
       }
     }
 
@@ -366,7 +500,7 @@ class AppConfigSpec extends UnitSpec {
 
             val result: Validated[String, Deprecation] = config.deprecationFor(Version1)
 
-            result shouldBe Invalid("sunsetDate must be later than deprecatedOn date for a deprecated version 1.0")
+            result shouldBe Invalid("sunsetDate must be later than deprecatedOn date for version 1.0")
           }
         }
       }
