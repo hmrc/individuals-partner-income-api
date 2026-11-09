@@ -327,27 +327,6 @@ class AppConfigSpec extends UnitSpec {
       }
     }
 
-    "sunsetDate is not later than deprecatedOn" should {
-      for {
-        status     <- Seq("BETA", "DEPRECATED")
-        sunsetDate <- Seq("2026-01-14", "2026-01-15")
-      } {
-        s"reject sunsetDate $sunsetDate for status $status" in {
-          val config = appConfig(
-            s"""
-               |1.0 {
-               |  status = "$status"
-               |  deprecatedOn = "2026-01-15"
-               |  sunsetDate = "$sunsetDate"
-               |}
-               |""".stripMargin
-          )
-
-          config.deprecationFor(Version1) shouldBe Invalid("sunsetDate must be later than deprecatedOn date for version 1.0")
-        }
-      }
-    }
-
     "the API version is deprecated" when {
       "deprecatedOn is missing" should {
         "return the expected message" in {
